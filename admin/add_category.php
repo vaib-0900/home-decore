@@ -3,8 +3,8 @@ include('header.php');
 include('sidebar.php');
 include('db_connection.php');
 ?>
-<div id="page-wrapper">
-    <div id="page-inner">
+<div class="container">
+  <div class="page-inner">
         <form action="add_category.php" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="category_name">Category Name:</label>
@@ -30,12 +30,14 @@ include('db_connection.php');
 
             if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] == 0) {
                 $target_dir = "upload/";
-                $target_file = $target_dir . basename($_FILES["category_image"]["name"]);
-                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                // Generate a unique filename to avoid conflicts
+                $imageFileType = strtolower(pathinfo($_FILES["category_image"]["name"], PATHINFO_EXTENSION));
                 $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
                 if (in_array($imageFileType, $allowed_types)) {
+                    $unique_name = uniqid('cat_', true) . '.' . $imageFileType;
+                    $target_file = $target_dir . $unique_name;
                     if (move_uploaded_file($_FILES["category_image"]["tmp_name"], $target_file)) {
-                        $sql = "INSERT INTO tbl_category (`category_name`, `category_image`, `category_description`) VALUES ('$category_name', '$target_file', '$category_description')";
+                        $sql = "INSERT INTO tbl_category (`category_name`, `category_image`, `category_description`) VALUES ('$category_name', '$unique_name', '$category_description')";
                         if (mysqli_query($conn, $sql)) {
                             echo "<div class='alert alert-success'>Category added successfully!</div>";
                         } else {
