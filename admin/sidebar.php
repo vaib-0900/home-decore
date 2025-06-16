@@ -35,6 +35,12 @@
                         <p>Category</p>
                     </a>
                 </li>
+                 <li class="nav-item">
+                    <a href="product_list.php" class="collapsed">
+                        <i class="fas fa-chevron-circle-right"></i>
+                        <p>Product</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#base">
