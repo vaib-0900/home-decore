@@ -30,9 +30,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="Category-list.php" class="collapsed">
+                    <a href="category_list.php" class="collapsed">
                         <i class="fas fa-chevron-circle-right"></i>
-                        <p>Categoryes</p>
+                        <p>Category</p>
                     </a>
                 </li>
 
