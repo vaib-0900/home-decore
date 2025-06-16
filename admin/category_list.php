@@ -29,7 +29,7 @@ include('sidebar.php');
                     echo "<td>" . $row['category_id'] . "</td>";
                     echo "<td>" . $row['category_name'] . "</td>";
                     echo "<td><img src='" . $row['category_image'] . "' alt='upload/" . $row['category_image'] . "' style='width: 100px; height: auto;'></td>";
-                    echo "<td>" . $row['category_discription'] . "</td>";
+                    echo "<td>" . $row['category_description'] . "</td>";
                     echo "<td>
                             <a href='edit_category.php?id=" . $row['category_id'] . "' class='btn btn-primary btn-sm'>Edit</a>
                             <a href='delete_category.php?id=" . $row['category_id'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure?\")'>Delete</a>

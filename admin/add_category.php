@@ -35,7 +35,7 @@ include('db_connection.php');
                 $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
                 if (in_array($imageFileType, $allowed_types)) {
                     if (move_uploaded_file($_FILES["category_image"]["tmp_name"], $target_file)) {
-                        $sql = "INSERT INTO tbl_category (`category_name`, `category_image`, `category_discription`) VALUES ('$category_name', '$target_file', '$category_description')";
+                        $sql = "INSERT INTO tbl_category (`category_name`, `category_image`, `category_description`) VALUES ('$category_name', '$target_file', '$category_description')";
                         if (mysqli_query($conn, $sql)) {
                             echo "<div class='alert alert-success'>Category added successfully!</div>";
                         } else {
