@@ -7,22 +7,25 @@ $alert_message = '';
 $alert_type = '';
 
 if (isset($_GET['id'])) {
-    $category_id = intval($_GET['id']); // Sanitize input
-    $query = "SELECT * FROM tbl_category WHERE category_id = ?";
+    $product_id = intval($_GET['id']); // Sanitize input
+    $query = "SELECT p.*, c.category_name 
+              FROM tbl_product p
+              LEFT JOIN tbl_category c ON p.add_category = c.category_id
+              WHERE p.product_id = ?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'i', $category_id);
+    mysqli_stmt_bind_param($stmt, 'i', $product_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     
     if (mysqli_num_rows($result) > 0) {
-        $category = mysqli_fetch_assoc($result);
+        $product = mysqli_fetch_assoc($result);
     } else {
-        $alert_message = "Category not found!";
+        $alert_message = "Product not found!";
         $alert_type = "danger";
     }
     mysqli_stmt_close($stmt);
 } else {
-    $alert_message = "No category ID specified!";
+    $alert_message = "No product ID specified!";
     $alert_type = "danger";
 }
 ?>
@@ -32,7 +35,7 @@ if (isset($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Category - Admin Panel</title>
+    <title><?= isset($product['product_name']) ? htmlspecialchars($product['product_name']) : 'Product Details' ?> - Admin Panel</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -43,6 +46,8 @@ if (isset($_GET['id'])) {
             --primary-color: #4e73df;
             --secondary-color: #f8f9fc;
             --accent-color: #2e59d9;
+            --success-color: #1cc88a;
+            --danger-color: #e74a3b;
         }
         
         body {
@@ -64,7 +69,7 @@ if (isset($_GET['id'])) {
             padding: 1.25rem 1.5rem;
         }
         
-        .form-control-static {
+        .detail-box {
             padding: 0.75rem;
             background-color: var(--secondary-color);
             border-radius: 0.35rem;
@@ -86,6 +91,23 @@ if (isset($_GET['id'])) {
             font-weight: 600;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
+        }
+        
+        .price-display {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        
+        .discount-badge {
+            font-size: 0.9rem;
+            position: absolute;
+            top: -10px;
+            right: -10px;
         }
         
         .back-btn {
@@ -114,6 +136,11 @@ if (isset($_GET['id'])) {
             color: var(--primary-color);
             font-weight: 600;
         }
+        
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -123,8 +150,8 @@ if (isset($_GET['id'])) {
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.php"><i class="fas fa-home"></i> Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="category_list.php"><i class="fas fa-list"></i> Categories</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-eye"></i> View Category</li>
+                    <li class="breadcrumb-item"><a href="product_management.php"><i class="fas fa-boxes"></i> Products</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-eye"></i> View Product</li>
                 </ol>
             </nav>
 
@@ -143,71 +170,31 @@ if (isset($_GET['id'])) {
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h4 class="card-title mb-0"><i class="fas fa-folder-open me-2"></i>Category Details</h4>
-                                <a href="category_list.php" class="btn btn-light back-btn">
-                                    <i class="fas fa-arrow-left me-1"></i> Back to Categories
+                                <h4 class="card-title mb-0"><i class="fas fa-box-open me-2"></i>Product Details</h4>
+                                <a href="product_management.php" class="btn btn-light back-btn">
+                                    <i class="fas fa-arrow-left me-1"></i> Back to Products
                                 </a>
                             </div>
                         </div>
                         
-                        <?php if (isset($category)): ?>
+                        <?php if (isset($product)): ?>
                         <div class="card-body">
                             <div class="row">
-                                <!-- Left Column - Text Details -->
-                                <div class="col-lg-8">
-                                    <div class="mb-4">
-                                        <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="detail-label">Category ID</label>
-                                                <div class="form-control-static">
-                                                    <span class="badge bg-primary">#<?php echo htmlspecialchars($category['category_id']); ?></span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                               
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label class="detail-label">Category Name</label>
-                                            <div class="form-control-static">
-                                                <i class="fas fa-tag me-2 text-muted"></i>
-                                                <?php echo htmlspecialchars($category['category_name']); ?>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label class="detail-label">Description</label>
-                                            <div class="form-control-static" style="min-height: 100px;">
-                                                <?php 
-                                                echo !empty($category['category_description']) 
-                                                    ? nl2br(htmlspecialchars($category['category_description'])) 
-                                                    : '<span class="text-muted">No description provided</span>';
-                                                ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Additional Information Section -->
-                                  
-                                </div>
-                                
-                                <!-- Right Column - Image -->
-                                <div class="col-lg-4">
+                                <!-- Left Column - Product Image -->
+                                 <div class="col-lg-4">
                                     <div class="card h-100">
                                         <div class="card-header bg-white">
-                                            <h5 class="mb-0"><i class="fas fa-image me-2"></i>Category Image</h5>
+                                            <h5 class="mb-0"><i class="fas fa-image me-2"></i>product Image</h5>
                                         </div>
                                         <div class="card-body text-center d-flex flex-column justify-content-center">
-                                            <?php if (!empty($category['category_image']) && file_exists('upload/' . $category['category_image'])): ?>
-                                                <img src="upload/<?php echo htmlspecialchars($category['category_image']); ?>" 
-                                                     alt="<?php echo htmlspecialchars($category['category_name']); ?>" 
+                                            <?php if (!empty($product_image['product_image']) && file_exists('upload/product/' . $product_image['product_image'])): ?>
+                                                <img src="upload/product/<?php echo htmlspecialchars($product['product_image']); ?>" 
+                                                     alt="<?php echo htmlspecialchars($product_name['product_name']); ?>" 
                                                      class="img-thumbnail mb-3">
-                                                <a href="upload/<?php echo htmlspecialchars($category['category_image']); ?>" 
+                                                <a href="upload/product/<?php echo htmlspecialchars($product_image['product_image']); ?>" 
                                                    class="btn btn-sm btn-outline-primary" 
                                                    target="_blank" 
-                                                   download="<?php echo htmlspecialchars($category['category_name']); ?>">
+                                                   download="<?php echo htmlspecialchars($product_name['product_name']); ?>">
                                                     <i class="fas fa-download me-1"></i> Download Image
                                                 </a>
                                             <?php else: ?>
@@ -219,22 +206,104 @@ if (isset($_GET['id'])) {
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <!-- Right Column - Product Details -->
+                                <div class="col-lg-8">
+                                    <div class="mb-4">
+                                        <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="detail-label">Product ID</label>
+                                                <div class="detail-box">
+                                                    <span class="badge bg-primary">#<?php echo htmlspecialchars($product['product_id']); ?></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                              
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="detail-label">Product Name</label>
+                                            <div class="detail-box">
+                                                <i class="fas fa-tag me-2 text-muted"></i>
+                                                <?php echo htmlspecialchars($product['product_name']); ?>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="detail-label">Category</label>
+                                            <div class="detail-box">
+                                                <i class="fas fa-folder me-2 text-muted"></i>
+                                                <?php echo !empty($product['category_name']) ? htmlspecialchars($product['category_name']) : 'Uncategorized'; ?>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="detail-label">Description</label>
+                                            <div class="detail-box" style="min-height: 100px;">
+                                                <?php 
+                                                echo !empty($product['product_description']) 
+                                                    ? nl2br(htmlspecialchars($product['product_description'])) 
+                                                    : '<span class="text-muted">No description provided</span>';
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Pricing Information -->
+                                    <div class="mb-4">
+                                        <h5 class="text-primary mb-3"><i class="fas fa-tags me-2"></i>Pricing Information</h5>
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="detail-label">Original Price</label>
+                                                <div class="detail-box price-display">
+                                                    <i class="fas fa-rupee-sign me-2 text-muted"></i>
+                                                    <?php echo number_format($product['product_price'], 2); ?>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="detail-label">Discount</label>
+                                                <div class="detail-box">
+                                                    <?php if ($product['discount_per'] > 0): ?>
+                                                        <span class="text-danger">
+                                                            <i class="fas fa-percentage me-2"></i>
+                                                            <?php echo htmlspecialchars($product['discount_per']); ?>%
+                                                            (₹<?php echo number_format($product['discount_value'], 2); ?>)
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="text-muted">No discount</span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="detail-label">Selling Price</label>
+                                                <div class="detail-box price-display text-success">
+                                                    <i class="fas fa-rupee-sign me-2"></i>
+                                                    <?php echo number_format($product['sell_price'], 2); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                
+                                </div>
                             </div>
                             
                             <!-- Action Buttons -->
                             <div class="row mt-4">
                                 <div class="col-md-12 d-flex justify-content-between">
                                     <div>
-                                        <a href="category_list.php" class="btn btn-outline-secondary action-btn">
-                                            <i class="fas fa-list me-1"></i> View All Categories
+                                        <a href="product_management.php" class="btn btn-outline-secondary action-btn">
+                                            <i class="fas fa-list me-1"></i> View All Products
                                         </a>
                                     </div>
                                     <div>
-                                        <a href="edit_category.php?id=<?php echo $category_id; ?>" class="btn btn-primary action-btn me-2">
-                                            <i class="fas fa-edit me-1"></i> Edit Category
+                                        <a href="edit_product.php?id=<?php echo $product_id; ?>" class="btn btn-primary action-btn me-2">
+                                            <i class="fas fa-edit me-1"></i> Edit Product
                                         </a>
                                         <button class="btn btn-danger action-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                            <i class="fas fa-trash-alt me-1"></i> Delete Category
+                                            <i class="fas fa-trash-alt me-1"></i> Delete Product
                                         </button>
                                     </div>
                                 </div>
@@ -256,12 +325,12 @@ if (isset($_GET['id'])) {
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete the category "<strong><?php echo isset($category) ? htmlspecialchars($category['category_name']) : ''; ?></strong>"?</p>
+                    <p>Are you sure you want to delete the product "<strong><?php echo isset($product) ? htmlspecialchars($product['product_name']) : ''; ?></strong>"?</p>
                     <p class="text-danger"><i class="fas fa-exclamation-circle me-1"></i>This action cannot be undone!</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a href="delete_category.php?id=<?php echo $category_id; ?>" class="btn btn-danger">
+                    <a href="delete_product.php?id=<?php echo $product_id; ?>" class="btn btn-danger">
                         <i class="fas fa-trash-alt me-1"></i> Delete Permanently
                     </a>
                 </div>
@@ -298,4 +367,4 @@ if (isset($_GET['id'])) {
 
 <?php
 include('footer.php');
-?>      
+?>

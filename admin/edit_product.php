@@ -33,7 +33,7 @@ if (isset($_POST['update_product'])) {
 
     // Handle image upload
     if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) {
-        $target_dir = "upload/";
+        $target_dir = "upload/product/";
         $target_file = $target_dir . basename($_FILES["product_image"]["name"]);
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
         $check = getimagesize($_FILES["product_image"]["tmp_name"]);
@@ -52,7 +52,7 @@ if (isset($_POST['update_product'])) {
         $product_image = $product['product_image'];
     }
 
-    $update_query = "UPDATE products SET
+    $update_query = "UPDATE tbl_product SET
                         product_name = '$product_name',
                         product_image = '$product_image',
                         product_price = '$product_price',
@@ -120,6 +120,8 @@ if (isset($_POST['update_product'])) {
                         <textarea class="form-control" id="product_description" name="product_description" required><?php echo $product['product_description']; ?></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary" name="update_product">Update Product</button>
+
+
                 </form>
             </div>
         </div>

@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
         if (in_array($mime_type, $allowed_types)) {
             $file_ext = pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION);
             $file_name = uniqid() . '.' . $file_ext;
-            $upload_path = "upload/" . $file_name;
+            $upload_path = "upload/product/" . $file_name;
             
             if (move_uploaded_file($_FILES['product_image']['tmp_name'], $upload_path)) {
                 $product_img = $upload_path;
@@ -43,7 +43,7 @@ if (isset($_POST['submit'])) {
 
     if (empty($error)) {
         // Prepared statement for security
-        $query = "INSERT INTO tbl_product (product_name, product_image, product_price, discount_per, discount_value, sell_price, product_description, category_id) VALUES ('$product_name','$product_img','$product_price', '$discount_per', '$discount_value', '$sell_price', '$product_description', '$category_id')";
+        $query = "INSERT INTO tbl_product (product_name, product_image, product_price, discount_per, discount_value, sell_price, product_description, add_category) VALUES ('$product_name','$product_img','$product_price', '$discount_per', '$discount_value', '$sell_price', '$product_description', '$category_id')";
         $stmt = mysqli_prepare($conn, $query);
        
         

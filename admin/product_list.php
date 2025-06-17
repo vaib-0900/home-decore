@@ -127,14 +127,14 @@ include('sidebar.php');
                                                     <tr>
                                                         <td><?= htmlspecialchars($row['product_id']) ?></td>
                                                         <td><?= htmlspecialchars($row['product_name']) ?></td>
+ 
                                                         <td>
                                                             <?php if (!empty($row['product_image'])): ?>
-                                                                <img src="upload/<?= htmlspecialchars($row['product_image']) ?>" alt="<?= htmlspecialchars($row['product_name']) ?>" class="img-thumbnail">
+                                                                <img src="<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="Product Image">
                                                             <?php else: ?>
-                                                                <span class="text-muted">No image</span>
+                                                                <img src="images/no-image.png" class="img-thumbnail" alt="No Image">
                                                             <?php endif; ?>
                                                         </td>
-
                                                         <td><?= htmlspecialchars($row['product_price']) ?></td>
                                                         <td><?= htmlspecialchars($row['discount_per']) ?></td>
                                                         <td><?= htmlspecialchars($row['discount_value']) ?></td>
