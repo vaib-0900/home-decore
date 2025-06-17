@@ -1,3 +1,9 @@
+<?php
+ session_start();
+ if(!isset($_SESSION["login"])){
+    echo "<script>window.location.href='login.php';</script>";
+ }
+?>
 <!doctype html>
 <html lang="zxx">
 
@@ -51,7 +57,8 @@
                                         Shop
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
-                                        <a class="dropdown-item" href="category.php"> shop category</a>
+                                        <a class="dropdown-item" href="shop.php"> shop </a>
+                                        <a class="dropdown-item" href="category.php">category </a>
                                         <a class="dropdown-item" href="single-product.php">product details</a>
                                         
                                     </div>
@@ -83,6 +90,13 @@
                                 
                                 <li class="nav-item">
                                     <a class="nav-link" href="contact.php">Contact</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="register.php">Register</a>
+                                </li>
+                                <li  class="nav-item">
+                                    <a class="nav-link" href="login_out.php">Logout</a>
+
                                 </li>
                             </ul>
                         </div>

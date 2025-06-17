@@ -41,6 +41,12 @@
                         <p>Product</p>
                     </a>
                 </li>
+                 <li class="nav-item">
+                    <a href="customer_list.php" class="collapsed">
+                        <i class="fas fa-chevron-circle-right"></i>
+                        <p>customer</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a data-bs-toggle="collapse" href="#base">
