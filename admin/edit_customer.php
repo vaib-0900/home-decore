@@ -3,108 +3,95 @@ include('header.php');
 include('sidebar.php');
 include('db_connection.php');
 
-// Initialize variables
-$customer = [];
-$errors = [];
+// Check if customer ID is provided
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header("Location: customer_list.php");
+    exit();
+}
 
-// Get customer data if ID is provided
-if (isset($_GET['id'])) {
-    $customer_id = intval($_GET['id']);
-    $stmt = $conn->prepare("SELECT * FROM tbl_customer WHERE customer_id = ?");
-    $stmt->bind_param("i", $customer_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $customer = $result->fetch_assoc();
-    $stmt->close();
-    
-    if (!$customer) {
-        die("<div class='alert alert-danger'>Customer not found</div>");
-    }
+$customer_id = intval($_GET['id']);
+
+// Fetch customer data
+$sql = "SELECT * FROM tbl_customer WHERE customer_id = ?";
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, "i", $customer_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$customer = mysqli_fetch_assoc($result);
+
+if (!$customer) {
+    header("Location: customer_list.php");
+    exit();
 }
 
 // Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate and sanitize inputs
-    $customer_id = intval($_POST['customer_id']);
-    $customer_name = htmlspecialchars(trim($_POST['customer_name']));
-    $customer_email = filter_var(trim($_POST['customer_email']), FILTER_SANITIZE_EMAIL);
-    $customer_phone = htmlspecialchars(trim($_POST['customer_phone']));
-    $customer_address = htmlspecialchars(trim($_POST['customer_address']));
-    $customer_landmark = htmlspecialchars(trim($_POST['customer_landmark']));
+    $customer_name = mysqli_real_escape_string($conn, $_POST['customer_name']);
+    $customer_email = mysqli_real_escape_string($conn, $_POST['customer_email']);
+    $customer_phone = mysqli_real_escape_string($conn, $_POST['customer_phone']);
+    $customer_address = mysqli_real_escape_string($conn, $_POST['customer_address']);
+    $customer_landmark = mysqli_real_escape_string($conn, $_POST['customer_landmark']);
     $customer_status = intval($_POST['customer_status']);
     
-    // Basic validation
-    if (empty($customer_name)) {
-        $errors[] = "Customer name is required";
-    }
-    if (!filter_var($customer_email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Invalid email format";
-    }
-    
-    // Only update password if it was changed
+    // Check if password is being updated
     $password_update = "";
     if (!empty($_POST['customer_password'])) {
-        $customer_password = password_hash($_POST['customer_password'], PASSWORD_DEFAULT);
-        $password_update = ", customer_password = ?";
+        $customer_password = mysqli_real_escape_string($conn, $_POST['customer_password']);
+        $password_update = ", customer_password = '$customer_password'";
     }
     
-    if (empty($errors)) {
-        // Check if email already exists for another customer
-        $check_stmt = $conn->prepare("SELECT customer_id FROM tbl_customer WHERE customer_email = ? AND customer_id != ?");
-        $check_stmt->bind_param("si", $customer_email, $customer_id);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
+    // Check if email is changed to one that already exists
+    if ($customer_email != $customer['customer_email']) {
+        $check_email = "SELECT customer_id FROM tbl_customer WHERE customer_email = '$customer_email' AND customer_id != $customer_id";
+        $result = mysqli_query($conn, $check_email);
         
-        if ($check_result->num_rows > 0) {
-            $errors[] = "Email already exists for another customer";
+        if (mysqli_num_rows($result) > 0) {
+            echo '<div class="alert alert-danger">Email already exists!</div>';
         } else {
-            // Prepare the update query
-            if (empty($password_update)) {
-                $query = "UPDATE tbl_customer SET 
-                          customer_name = ?, 
-                          customer_email = ?, 
-                          customer_phone = ?, 
-                          customer_address = ?, 
-                          customer_landmark = ?, 
-                          customer_status = ? 
-                          WHERE customer_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param("sssssii", 
-                    $customer_name, 
-                    $customer_email, 
-                    $customer_phone, 
-                    $customer_address, 
-                    $customer_landmark, 
-                    $customer_status, 
-                    $customer_id
-                );
-            } else {
-                $query = "UPDATE tbl_customer SET 
-                          customer_name = ?, 
-                          customer_email = ?, 
-                          customer_password = ?, 
-                          customer_phone = ?, 
-                          customer_address = ?, 
-                          customer_landmark = ?, 
-                          customer_status = ? 
-                          WHERE customer_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param("ssssssii", 
-                    $customer_name, 
-                    $customer_email, 
-                    $customer_password, 
-                    $customer_phone, 
-                    $customer_address, 
-                    $customer_landmark, 
-                    $customer_status, 
-                    $customer_id
-                );
-            }
+            $sql = "UPDATE tbl_customer SET 
+                    customer_name = '$customer_name',
+                    customer_email = '$customer_email',
+                    customer_phone = '$customer_phone',
+                    customer_address = '$customer_address',
+                    customer_landmark = '$customer_landmark',
+                    customer_status = $customer_status
+                    $password_update
+                    WHERE customer_id = $customer_id";
             
-         
-            $stmt->close();
+            if (mysqli_query($conn, $sql)) {
+                echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Customer updated successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>';
+                // Refresh customer data
+                $result = mysqli_query($conn, "SELECT * FROM tbl_customer WHERE customer_id = $customer_id");
+                $customer = mysqli_fetch_assoc($result);
+            } else {
+                echo '<div class="alert alert-danger">Error: ' . mysqli_error($conn) . '</div>';
+            }
         }
-        $check_stmt->close();
+    } else {
+        $sql = "UPDATE tbl_customer SET 
+                customer_name = '$customer_name',
+                customer_phone = '$customer_phone',
+                customer_address = '$customer_address',
+                customer_landmark = '$customer_landmark',
+                customer_status = $customer_status
+                $password_update
+                WHERE customer_id = $customer_id";
+        
+        if (mysqli_query($conn, $sql)) {
+            echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Customer updated successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>';
+            // Refresh customer data
+            $result = mysqli_query($conn, "SELECT * FROM tbl_customer WHERE customer_id = $customer_id");
+            $customer = mysqli_fetch_assoc($result);
+        } else {
+            echo '<div class="alert alert-danger">Error: ' . mysqli_error($conn) . '</div>';
+        }
     }
 }
 ?>
@@ -123,6 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body {
             background-color: #f8f9fc;
         }
+        #page-wrapper {
+            padding: 20px;
+        }
         .card {
             border-radius: 0.35rem;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
@@ -135,13 +125,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .form-group {
             margin-bottom: 1.5rem;
         }
-        .password-toggle {
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-     <div class="container">
+  <div class="container">
         <div class="page-inner">
             <div class="row">
                 <div class="col-lg-12">
@@ -160,22 +147,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-lg-8 text-center mx-auto">
                     <div class="card">
                         <div class="card-header">
-                            <h6 class="m-0 font-weight-bold text-primary">Customer Details</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Customer Information</h6>
                         </div>
                         <div class="card-body">
-                            <?php if (!empty($errors)): ?>
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        <?php foreach ($errors as $error): ?>
-                                            <li><?php echo $error; ?></li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </div>
-                            <?php endif; ?>
-
-                            <form action="" method="POST">
-                                <input type="hidden" name="customer_id" value="<?php echo $customer['customer_id']; ?>">
-                                
+                            <form action="edit_customer.php?id=<?php echo $customer_id; ?>" method="post">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -196,14 +171,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="customer_password" class="form-label">Password (leave blank to keep current)</label>
+                                            <label for="customer_password" class="form-label">New Password</label>
                                             <div class="input-group">
                                                 <input type="password" class="form-control" id="customer_password" name="customer_password">
-                                                <button class="btn btn-outline-secondary password-toggle" type="button">
+                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                             </div>
-                                            <small class="text-muted">Minimum 8 characters</small>
+                                            <small class="text-muted">Leave blank to keep current password</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -217,8 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                                 <div class="form-group">
                                     <label for="customer_address" class="form-label">Address *</label>
-                                    <textarea class="form-control" id="customer_address" name="customer_address" rows="2" required><?php 
-                                        echo htmlspecialchars($customer['customer_address']); ?></textarea>
+                                    <textarea class="form-control" id="customer_address" name="customer_address" rows="2" required><?php echo htmlspecialchars($customer['customer_address']); ?></textarea>
                                 </div>
 
                                 <div class="row">
@@ -233,8 +207,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="form-group">
                                             <label for="customer_status" class="form-label">Status *</label>
                                             <select class="form-select" id="customer_status" name="customer_status" required>
-                                                <option value="1" <?php echo ($customer['customer_status'] == 1) ? 'selected' : ''; ?>>Active</option>
-                                                <option value="0" <?php echo ($customer['customer_status'] == 0) ? 'selected' : ''; ?>>Inactive</option>
+                                                <option value="1" <?php echo $customer['customer_status'] == 1 ? 'selected' : ''; ?>>Active</option>
+                                                <option value="0" <?php echo $customer['customer_status'] == 0 ? 'selected' : ''; ?>>Inactive</option>
                                             </select>
                                         </div>
                                     </div>
@@ -245,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <i class="fas fa-save"></i> Update Customer
                                     </button>
                                     <a href="customer_list.php" class="btn btn-secondary">
-                                        <i class="fas fa-times"></i> Cancel
+                                        <i class="fas fa-arrow-left"></i> Back to List
                                     </a>
                                 </div>
                             </form>
@@ -260,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Toggle password visibility
-        document.querySelector('.password-toggle').addEventListener('click', function() {
+        document.getElementById('togglePassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('customer_password');
             const icon = this.querySelector('i');
             

@@ -63,7 +63,7 @@ include('db_connection.php');
                                 // Validate and sanitize inputs
                                 $customer_name = mysqli_real_escape_string($conn, $_POST['customer_name']);
                                 $customer_email = mysqli_real_escape_string($conn, $_POST['customer_email']);
-                                $customer_password = password_hash($_POST['customer_password'], PASSWORD_DEFAULT); // Hash password
+                                $customer_password = mysqli_real_escape_string($conn, $_POST['customer_password']);
                                 $customer_phone = mysqli_real_escape_string($conn, $_POST['customer_phone']);
                                 $customer_address = mysqli_real_escape_string($conn, $_POST['customer_address']);
                                 $customer_landmark = mysqli_real_escape_string($conn, $_POST['customer_landmark']);
