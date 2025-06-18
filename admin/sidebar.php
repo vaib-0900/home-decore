@@ -35,16 +35,22 @@
                         <p>Category</p>
                     </a>
                 </li>
-                 <li class="nav-item">
+                <li class="nav-item">
                     <a href="product_list.php" class="collapsed">
                         <i class="fas fa-chevron-circle-right"></i>
                         <p>Product</p>
                     </a>
                 </li>
-                 <li class="nav-item">
+                <li class="nav-item">
                     <a href="customer_list.php" class="collapsed">
                         <i class="fas fa-chevron-circle-right"></i>
                         <p>customer</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="feature_list.php" class="collapsed">
+                        <i class="fas fa-chevron-circle-right"></i>
+                        <p>Fratured</p>
                     </a>
                 </li>
 
