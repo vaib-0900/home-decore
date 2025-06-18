@@ -141,6 +141,25 @@ $mysqli->close();
 </head>
 
 <body>
+
+ <!--================Home Banner Area =================-->
+  <!-- breadcrumb start-->
+  <section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="breadcrumb_iner">
+            <div class="breadcrumb_iner_item">
+              <h2>Category</h2>
+              <p>Home <span>-</span> category</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- breadcrumb start-->
+
     <div class="container py-4 mt-5">
         <h2 class="text-center mb-5 mt">Our categories Selection</h2>
 
