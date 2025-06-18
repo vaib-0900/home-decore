@@ -104,6 +104,7 @@ include('sidebar.php');
                                             <th>Discount Value</th>
                                             <th>Sell Price</th>
                                             <th>Category</th>
+                                            <th>Featured</th>
                                             <th width="15%">Actions</th>
                                         </tr>
                                     </thead>
@@ -127,7 +128,7 @@ include('sidebar.php');
                                                     <tr>
                                                         <td><?= htmlspecialchars($row['product_id']) ?></td>
                                                         <td><?= htmlspecialchars($row['product_name']) ?></td>
- 
+
                                                         <td>
                                                             <?php if (!empty($row['product_image'])): ?>
                                                                 <img src="<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="Product Image">
@@ -140,6 +141,12 @@ include('sidebar.php');
                                                         <td><?= htmlspecialchars($row['discount_value']) ?></td>
                                                         <td><?= htmlspecialchars($row['sell_price']) ?></td>
                                                         <td><?= !empty($row['category_name']) ? htmlspecialchars($row['category_name']) : 'Uncategorized' ?></td>
+                                                        <td>
+                                                            <a href="Featured-insert.php?product_id=<?= $row["product_id"] ?>"
+                                                                class="text-warning fs-5">
+                                                                <i class="fa fa-star"></i>
+                                                            </a>
+                                                        </td>
                                                         <td class="action-btns">
                                                             <a href="view_product.php?id=<?= $row['product_id'] ?>" class="btn btn-info btn-sm" title="View">
                                                                 <i class="fas fa-eye"></i>

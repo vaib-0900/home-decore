@@ -1,101 +1,170 @@
 <?php
-include("../db-connection/db connection.php");
+include("db_connection.php");
 include "header.php";
 include "sidebar.php";
 ?>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toastEl = document.querySelector('.toast');
-        if (toastEl) {
-            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-            toast.show();
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Featured Products Management</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fc;
         }
-    });
-</script>
-<?php if (isset($_SESSION['delete'])): ?>
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055;text-align: center; margin-top: 100px;">
-        <div class="toast text-center align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive"
-            aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <?= htmlspecialchars($_SESSION['delete']) ?>
+
+        #page-wrapper {
+            padding: 20px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .card {
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.35rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table th {
+            white-space: nowrap;
+            background-color: #f8f9fc;
+        }
+
+        .img-thumbnail {
+            max-width: 100px;
+            height: auto;
+        }
+
+        .action-btns .btn {
+            margin-right: 5px;
+        }
+
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-inner">
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        Featured Products Management
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li>
+                            <i class="fa fa-dashboard"></i> <a href="index.php">Dashboard</a>
+                        </li>
+                        <li class="active">
+                            <i class="fa fa-star"></i> Featured Products
+                        </li>
+                    </ol>
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Featured Products List</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th width="5%">ID</th>
+                                            <th>Product Name</th>
+                                            <th width="15%">Image</th>
+                                            <th>Price</th>
+                                            <th>Discount (%)</th>
+                                            <th>Discount Value</th>
+                                            <th>Sell Price</th>
+                                            <th width="15%">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $count = 0;
+                                        $query = "SELECT * FROM tbl_feature INNER JOIN tbl_product ON tbl_product.product_id = tbl_feature.product_id";
+                                        $result = mysqli_query($conn, $query);
+                                        
+                                        if (mysqli_num_rows($result) > 0) {
+                                            while ($row = mysqli_fetch_array($result)) {
+                                        ?>
+                                                <tr>
+                                                    <td><?= ++$count ?></td>
+                                                    <td><?= htmlspecialchars($row['product_name']) ?></td>
+                                                    <td>
+                                                        <?php if (!empty($row['product_image'])): ?>
+                                                            <img src="<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="Product Image">
+                                                        <?php else: ?>
+                                                            <img src="images/no-image.png" class="img-thumbnail" alt="No Image">
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td><?= htmlspecialchars($row['product_price']) ?></td>
+                                                    <td><?= htmlspecialchars($row['discount_per']) ?></td>
+                                                    <td><?= htmlspecialchars($row['discount_value']) ?></td>
+                                                    <td><?= htmlspecialchars($row['sell_price']) ?></td>
+                                                    <td class="action-btns">
+                                                        <a href="Featured-delete.php?feature_id=<?= $row['feature_id'] ?>" 
+                                                           class="btn btn-danger btn-sm" 
+                                                           onclick="return confirm('Are you sure you want to delete this featured product?')">
+                                                            <i class="fas fa-trash-alt"></i> Remove
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php
+                                            }
+                                        } else {
+                                            ?>
+                                            <tr>
+                                                <td colspan="8" class="text-center">
+                                                    No featured products found.
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer small text-muted">
+                            Updated at <?= date("Y-m-d H:i:s") ?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <?php unset($_SESSION['delete']); ?>
-<?php endif; ?>
-<!-- delete -->
-<div class="container">
-    <div class="page-inner">
-        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-            <div>
-                <h3 class="fw-bold mb-3">Featured List</h3>
-            </div>
-        </div>
-        <hr>
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header bg-info text-white text-left fw-bold fs-4 rounded-top-4">
-                Featured List
-            </div>
-            <div class="card-body bg-light rounded-bottom-4">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-striped text-center align-middle">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>#</th>
-                                <th>Featured Product Name</th>
-                                <th>Featured Image</th>
-                                <th>MRP</th>
-                                <th>Discount %</th>
-                                <th>Discount Value</th>
-                                <th>Sell Price</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $count = 0;
-                            $query = "SELECT * FROM tbl_feature INNER JOIN tbl_product ON tbl_product.product_id = tbl_feature.product_id";
-                            $result = mysqli_query($conn, $query);
-                            while ($row = mysqli_fetch_array($result)) {
-                                ?>
-                                <tr>
-                                    <td><?= ++$count; ?></td>
-                                    <td class="fw-semibold"><?= $row["product_name"] ?></td>
-                                    <td>
-                                        <img src="uplodes/image/<?= $row["product_img"] ?>" class="rounded-circle shadow-sm"
-                                            style="width: 50px; height: 50px;" alt="Product Image">
-                                    </td>
-                                    <td>₹<?= $row["product_mrp"] ?></td>
-                                    <td><span class="badge bg-info"><?= $row["product_discount_percentage"] ?>%</span></td>
-                                    <td>₹<?= $row["product_discount_value"] ?></td>
-                                    <td><span class="badge bg-success fs-6">₹<?= $row["product_sell_price"] ?></span></td>
-                                    <td>
-                                        <a href="Featured-delete.php?feature_id=<?= $row["feature_id"] ?>"
-                                            class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Delete"
-                                            onclick="return confirm('Are you sure you want to delete this item?');">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <?php
-                            }
-                            if ($count == 0) {
-                                echo '<tr><td colspan="8"><div class="text-danger fw-bold">No Data Found</div></td></tr>';
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+
 <?php
 include "footer.php";
-?>1
