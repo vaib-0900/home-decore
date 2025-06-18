@@ -150,7 +150,7 @@ if (isset($_GET['id'])) {
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.php"><i class="fas fa-home"></i> Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="product_management.php"><i class="fas fa-boxes"></i> Products</a></li>
+                    <li class="breadcrumb-item"><a href="product_list.php"><i class="fas fa-boxes"></i> Products</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><i class="fas fa-eye"></i> View Product</li>
                 </ol>
             </nav>
@@ -171,7 +171,7 @@ if (isset($_GET['id'])) {
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                                 <h4 class="card-title mb-0"><i class="fas fa-box-open me-2"></i>Product Details</h4>
-                                <a href="product_management.php" class="btn btn-light back-btn">
+                                <a href="product_list.php" class="btn btn-light back-btn">
                                     <i class="fas fa-arrow-left me-1"></i> Back to Products
                                 </a>
                             </div>
