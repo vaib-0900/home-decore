@@ -94,73 +94,79 @@ if (!isset($conn)) {
                 if (mysqli_num_rows($result) > 0) {
                     while ($row = mysqli_fetch_array($result)) {
                 ?>
-                     <div class="swiper-slide">
-    <div class="card h-100 border-0 shadow-sm">
-        <!-- Product Badge -->
-        <?php if ($row['discount_per'] > 0): ?>
-            <span class="badge bg-danger position-absolute m-2">-<?= $row['discount_per'] ?>%</span>
-        <?php endif; ?>
-        
-        <!-- Product Image -->
-        <div class="position-relative overflow-hidden text-center">
-            <a href="single_productview.php?product_id=<?= $row['product_id'] ?>">
-                <img src="admin/<?= $row['product_image'] ?>" 
-                     class="card-img-to object-fit-cover" 
-                     alt="<?= htmlspecialchars($row['product_name']) ?>">
-            </a>
-           
-        </div>
-        
-        <!-- Product Body -->
-        <div class="card-body">
-            <div class="d-flex justify-content-between mb-2">
-                <span class="badge bg-light text-dark"><?= $row['category_name'] ?? 'Category' ?></span>
-                <div class="text-warning">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
-            
-            <h5 class="card-title">
-                <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none text-dark">
-                    <?= htmlspecialchars($row['product_name']) ?>
-                </a>
-            </h5>
-            
-            <p class="card-text text-muted small">
-                <?= substr(htmlspecialchars($row['product_description'] ?? ''), 0, 80) ?>...
-            </p>
-            
-            <!-- Price -->
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <div>
-                    <h5 class="text-primary mb-0">Rs. <?= number_format($row['sell_price'], 2) ?></h5>
-                    <?php if ($row['discount_per'] > 0 && isset($row['original_price'])): ?>
-                        <small class="text-muted text-decoration-line-through">Rs. <?= number_format($row['original_price'], 2) ?></small>
-                    <?php endif; ?>
-                </div>
-                <form action="cart_insert.php" method="post" class="d-inline">
-                    <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
-                    <input type="hidden" name="cart_qty" value="1">
-                    <button type="submit" class="btn btn-primary btn-sm">
-                        <i class="fas fa-cart-plus"></i> Add
-                    </button>
-                 
-                
-                <form action="wish_list_insert.php" method="post" class="d-inline">
-                    <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
-                    <button type="submit" class="btn btn-sm btn-light rounded-circle shadow-sm">
-                        <i class="far fa-heart"></i>
-                    </button>
-                </form>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                        <div class="swiper-slide">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <!-- Product Badge -->
+                                <?php if ($row['discount_per'] > 0): ?>
+                                    <span class="badge bg-danger position-absolute m-2">-<?= $row['discount_per'] ?>%</span>
+                                <?php endif; ?>
+
+                                <!-- Product Image -->
+                                <div class="position-relative overflow-hidden text-center">
+                                    <a href="single_productview.php?product_id=<?= $row['product_id'] ?>">
+                                        <img src="admin/<?= $row['product_image'] ?>"
+                                            class="card-img-to object-fit-cover"
+                                            alt="<?= htmlspecialchars($row['product_name']) ?>">
+                                    </a>
+
+                                </div>
+
+                                <!-- Product Body -->
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="badge bg-light text-dark"><?= $row['category_name'] ?? 'Category' ?></span>
+                                        <div class="text-warning">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="card-title">
+                                        <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none text-dark">
+                                            <?= htmlspecialchars($row['product_name']) ?>
+                                        </a>
+                                    </h5>
+
+                                    <p class="card-text text-muted small">
+                                        <?= substr(htmlspecialchars($row['product_description'] ?? ''), 0, 80) ?>...
+                                    </p>
+
+                                    <!-- Price -->
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div>
+                                            <h5 class="text-primary mb-0">Rs. <?= number_format($row['sell_price'], 2) ?></h5>
+                                            <?php if ($row['discount_per'] > 0 && isset($row['original_price'])): ?>
+                                                <small class="text-muted text-decoration-line-through">Rs. <?= number_format($row['original_price'], 2) ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="action-buttons d-flex gap-2 flex-wrap">
+                                            <a href="single-product.php ?product_id=<?= $row['product_id'] ?>"
+                                                class="btn btn-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
+                                                <i class="fas fa-eye me-1"></i>
+                                                <span>View</span>
+                                            </a>
+                                            <a href="addtocart.php?id=<?= $row['product_id'] ?>"
+                                                class="btn btn-primary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
+                                                <i class="fas fa-cart-plus me-1"></i>
+                                                <span>Add</span>
+                                            </a>
+                                            <a href="wishlist.php?id=<?= $row['product_id'] ?>"
+                                                class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
+                                                <i class="far fa-heart me-1"></i>
+                                                <span>Wishlist</span>
+
+                                            </a>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 <?php
                     }
                 } else {

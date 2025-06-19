@@ -72,7 +72,7 @@
                                         <a class="dropdown-item" href="login.php"> login</a>
                                         <a class="dropdown-item" href="tracking.php">tracking</a>
                                         <a class="dropdown-item" href="checkout.php">product checkout</a>
-                                        <a class="dropdown-item" href="cart.php">shopping cart</a>
+                                        <a class="dropdown-item" href="cart_list.php">shopping cart</a>
                                         <a class="dropdown-item" href="confirmation.php">confirmation</a>
                 
                                     </div>
@@ -103,31 +103,12 @@
                         <div class="hearer_icon d-flex">
                             <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
                             <a href=""><i class="ti-heart"></i></a>
-                            <div class="dropdown cart">
-                                <a class="dropdown-toggle" href="#" id="navbarDropdown3" role="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-cart-plus"></i>
-                                </a>
-                                <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <div class="single_product">
-    
-                                    </div>
-                                </div> -->
-                                
-                            </div>
+                            <a href="cart_list.php"><i class="ti-shopping-cart"></i></a>
                         </div>
                     </nav>
                 </div>
             </div>
         </div>
-        <div class="search_input" id="search_input_box">
-            <div class="container ">
-                <form class="d-flex justify-content-between search-inner">
-                    <input type="text" class="form-control" id="search_input" placeholder="Search Here">
-                    <button type="submit" class="btn"></button>
-                    <span class="ti-close" id="close_search" title="Close Search"></span>
-                </form>
-            </div>
-        </div>
+       
     </header>
     <!-- Header part end-->
