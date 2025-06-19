@@ -143,7 +143,7 @@ if (!isset($conn)) {
                                             <?php endif; ?>
                                         </div>
                                         <div class="action-buttons d-flex gap-2 flex-wrap">
-                                            <a href="single-product.php ?product_id=<?= $row['product_id'] ?>"
+                                            <a href="single-product.php?product_id=<?= $row['product_id'] ?>"
                                                 class="btn btn-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
                                                 <i class="fas fa-eye me-1"></i>
                                                 <span>View</span>
@@ -153,7 +153,7 @@ if (!isset($conn)) {
                                                 <i class="fas fa-cart-plus me-1"></i>
                                                 <span>Add</span>
                                             </a>
-                                            <a href="wishlist.php?id=<?= $row['product_id'] ?>"
+                                            <a href="wishlist-insert.php?id=<?= $row['product_id'] ?>"
                                                 class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
                                                 <i class="far fa-heart me-1"></i>
                                                 <span>Wishlist</span>

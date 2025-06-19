@@ -69,7 +69,7 @@
                                         pages
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                        <a class="dropdown-item" href="login.php"> login</a>
+                                        <a class="dropdown-item" href="wishlist.php"> shopping Wishlist</a>
                                         <a class="dropdown-item" href="tracking.php">tracking</a>
                                         <a class="dropdown-item" href="checkout.php">product checkout</a>
                                         <a class="dropdown-item" href="cart_list.php">shopping cart</a>
@@ -102,7 +102,7 @@
                         </div>
                         <div class="hearer_icon d-flex">
                             <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
-                            <a href=""><i class="ti-heart"></i></a>
+                            <a href="wishlist.php"><i class="ti-heart"></i></a>
                             <a href="cart_list.php"><i class="ti-shopping-cart"></i></a>
                         </div>
                     </nav>

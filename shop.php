@@ -200,10 +200,8 @@ include 'header.php';
                                             <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_image']) ?>">
                                            
                                         </a>
-                                        <div class="product-actions position-absolute top-0 end-0 m-2">
-                                            <button class="btn btn-sm btn-light rounded-circle shadow-sm mb-2" data-bs-toggle="tooltip" title="Add to Wishlist">
-                                                <i class="far fa-heart"></i>
-                                            </button>
+                                        <div class="product-actions position-absolute top-0 end-0 m-2">                         
+                                           
                                             <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $row['product_id'] ?>" data-bs-toggle="tooltip" title="Quick View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
@@ -245,6 +243,11 @@ include 'header.php';
                                                 class="btn btn-primary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
                                                 <i class="fas fa-cart-plus me-1"></i>
                                                 <span>Add</span>
+                                            </a>
+                                            <a href="wishlist-insert.php?id=<?= $row['product_id'] ?>"
+                                                class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
+                                                 <i class="far fa-heart"></i>
+
                                             </a>
                                         </div>
                                     </div>
