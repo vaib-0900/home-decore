@@ -1,177 +1,240 @@
 <?php
 include 'header.php';
+// Ensure database connection is available
+if (!isset($conn)) {
+    // Update the path to your actual database connection file if different
+    include 'admin/db_connection.php';
+}
 ?>
- <!-- banner part start-->
-    <section class="banner_part">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-12">
-                    <div class="banner_slider owl-carousel">
-                        <div class="single_banner_slider">
-                            <div class="row">
-                                <div class="col-lg-5 col-md-8">
-                                    <div class="banner_text">
-                                        <div class="banner_text_iner">
-                                            <h1>Luxury Home Decor</h1>
-                                            <p>Transform your living space with our exquisite collection of handcrafted home decor pieces that blend style and functionality seamlessly.</p>
-                                            <a href="#" class="btn_2">Shop Now</a>
-                                        </div>
+<!-- banner part start-->
+<section class="banner_part">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12">
+                <div class="banner_slider owl-carousel">
+                    <div class="single_banner_slider">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-8">
+                                <div class="banner_text">
+                                    <div class="banner_text_iner">
+                                        <h1>Luxury Home Decor</h1>
+                                        <p>Transform your living space with our exquisite collection of handcrafted home decor pieces that blend style and functionality seamlessly.</p>
+                                        <a href="#" class="btn_2">Shop Now</a>
                                     </div>
-                                </div>
-                                <div class="banner_img d-none d-lg-block">
-                                    <img src="img/banner_img.png" alt="Luxury home decor">
                                 </div>
                             </div>
-                        </div>
-                        <div class="single_banner_slider">
-                            <div class="row">
-                                <div class="col-lg-5 col-md-8">
-                                    <div class="banner_text">
-                                        <div class="banner_text_iner">
-                                            <h1>Modern Wall Art</h1>
-                                            <p>Elevate your walls with our curated selection of contemporary art pieces that add personality to any room.</p>
-                                            <a href="#" class="btn_2">Explore Collection</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="banner_img d-none d-lg-block">
-                                    <img src="img/banner_img1.png" alt="Modern wall art">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="single_banner_slider">
-                            <div class="row">
-                                <div class="col-lg-5 col-md-8">
-                                    <div class="banner_text">
-                                        <div class="banner_text_iner">
-                                            <h1>Seasonal Decor</h1>
-                                            <p>Refresh your home for every season with our beautiful, trend-forward decorative accents.</p>
-                                            <a href="#" class="btn_2">View Seasonal Picks</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="banner_img d-none d-lg-block">
-                                    <img src="img/banner_img2.png" alt="Seasonal home decor">
-                                </div>
+                            <div class="banner_img d-none d-lg-block">
+                                <img src="img/banner_img.png" alt="Luxury home decor">
                             </div>
                         </div>
                     </div>
-                    <div class="slider-counter"></div>
+                    <div class="single_banner_slider">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-8">
+                                <div class="banner_text">
+                                    <div class="banner_text_iner">
+                                        <h1>Modern Wall Art</h1>
+                                        <p>Elevate your walls with our curated selection of contemporary art pieces that add personality to any room.</p>
+                                        <a href="#" class="btn_2">Explore Collection</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="banner_img d-none d-lg-block">
+                                <img src="img/banner_img1.png" alt="Modern wall art">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single_banner_slider">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-8">
+                                <div class="banner_text">
+                                    <div class="banner_text_iner">
+                                        <h1>Seasonal Decor</h1>
+                                        <p>Refresh your home for every season with our beautiful, trend-forward decorative accents.</p>
+                                        <a href="#" class="btn_2">View Seasonal Picks</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="banner_img d-none d-lg-block">
+                                <img src="img/banner_img2.png" alt="Seasonal home decor">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-counter"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner part start-->
+<!-- feature_part start-->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h2 class="section-title">Featured Products</h2>
+                <div>
+                    <button class="btn btn-outline-secondary me-2 featured-prev rounded-circle">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary featured-next rounded-circle">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- banner part start-->
-    <!-- feature_part start-->
-    <section class="feature_part padding_top">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="section_tittle text-center">
-                        <h2>Featured Category</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row align-items-center justify-content-between">
-                <div class="col-lg-7 col-sm-6">
-                    <div class="single_feature_post_text">
-                        <p>Premium Quality</p>
-                        <h3>Latest foam Sofa</h3>
-                        <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                        <img src="img/feature/feature_1.png" alt="">
-                    </div>
-                </div>
-                <div class="col-lg-5 col-sm-6">
-                    <div class="single_feature_post_text">
-                        <p>Premium Quality</p>
-                        <h3>Latest foam Sofa</h3>
-                        <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                        <img src="img/feature/feature_2.png" alt="">
-                    </div>
-                </div>
-                <div class="col-lg-5 col-sm-6">
-                    <div class="single_feature_post_text">
-                        <p>Premium Quality</p>
-                        <h3>Latest foam Sofa</h3>
-                        <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                        <img src="img/feature/feature_3.png" alt="">
-                    </div>
-                </div>
-                <div class="col-lg-7 col-sm-6">
-                    <div class="single_feature_post_text">
-                        <p>Premium Quality</p>
-                        <h3>Latest foam Sofa</h3>
-                        <a href="#" class="feature_btn">EXPLORE NOW <i class="fas fa-play"></i></a>
-                        <img src="img/feature/feature_4.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- subscribe_area part start-->
-    <section class="subscribe_area section_padding">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-7">
-                    <div class="subscribe_area_text text-center">
-                        <h5>Join Our Newsletter</h5>
-                        <h2>Subscribe to get Updated
-                            with new offers</h2>
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="enter email address"
-                                aria-label="Recipient's username" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <a href="#" class="input-group-text btn_2" id="basic-addon2">subscribe now</a>
-                            </div>
+        <div class="swiper featured-slider overflow-hidden">
+            <div class="swiper-wrapper">
+                <?php
+
+                $query = "SELECT * FROM tbl_product INNER JOIN tbl_feature ON tbl_product.product_id = tbl_feature.product_id";
+                $result = mysqli_query($conn, $query);
+
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_array($result)) {
+                ?>
+                     <div class="swiper-slide">
+    <div class="card h-100 border-0 shadow-sm">
+        <!-- Product Badge -->
+        <?php if ($row['discount_per'] > 0): ?>
+            <span class="badge bg-danger position-absolute m-2">-<?= $row['discount_per'] ?>%</span>
+        <?php endif; ?>
+        
+        <!-- Product Image -->
+        <div class="position-relative overflow-hidden text-center">
+            <a href="single_productview.php?product_id=<?= $row['product_id'] ?>">
+                <img src="admin/<?= $row['product_image'] ?>" 
+                     class="card-img-to object-fit-cover" 
+                     alt="<?= htmlspecialchars($row['product_name']) ?>">
+            </a>
+           
+        </div>
+        
+        <!-- Product Body -->
+        <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="badge bg-light text-dark"><?= $row['category_name'] ?? 'Category' ?></span>
+                <div class="text-warning">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+            </div>
+            
+            <h5 class="card-title">
+                <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none text-dark">
+                    <?= htmlspecialchars($row['product_name']) ?>
+                </a>
+            </h5>
+            
+            <p class="card-text text-muted small">
+                <?= substr(htmlspecialchars($row['product_description'] ?? ''), 0, 80) ?>...
+            </p>
+            
+            <!-- Price -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                    <h5 class="text-primary mb-0">Rs. <?= number_format($row['sell_price'], 2) ?></h5>
+                    <?php if ($row['discount_per'] > 0 && isset($row['original_price'])): ?>
+                        <small class="text-muted text-decoration-line-through">Rs. <?= number_format($row['original_price'], 2) ?></small>
+                    <?php endif; ?>
+                </div>
+                <form action="cart_insert.php" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
+                    <input type="hidden" name="cart_qty" value="1">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-cart-plus"></i> Add
+                    </button>
+                 
+                
+                <form action="wish_list_insert.php" method="post" class="d-inline">
+                    <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
+                    <button type="submit" class="btn btn-sm btn-light rounded-circle shadow-sm">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </form>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+                <?php
+                    }
+                } else {
+                    echo '<div class="col-12 text-center py-5"><div class="alert alert-info">No featured products found.</div></div>';
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- subscribe_area part start-->
+<section class="subscribe_area section_padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="subscribe_area_text text-center">
+                    <h5>Join Our Newsletter</h5>
+                    <h2>Subscribe to get Updated
+                        with new offers</h2>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="enter email address"
+                            aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <a href="#" class="input-group-text btn_2" id="basic-addon2">subscribe now</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!--::subscribe_area part end::-->
+    </div>
+</section>
+<!--::subscribe_area part end::-->
 
-    <!-- subscribe_area part start-->
-    <section class="client_logo padding_top">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-12">
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_1.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_2.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_3.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_4.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_5.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_3.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_1.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_2.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_3.png" alt="">
-                    </div>
-                    <div class="single_client_logo">
-                        <img src="img/client_logo/client_logo_4.png" alt="">
-                    </div>
+<!-- subscribe_area part start-->
+<section class="client_logo padding_top">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12">
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_1.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_2.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_3.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_4.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_5.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_3.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_1.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_2.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_3.png" alt="">
+                </div>
+                <div class="single_client_logo">
+                    <img src="img/client_logo/client_logo_4.png" alt="">
                 </div>
             </div>
         </div>
-    </section>
-    <!--::subscribe_area part end::-->
+    </div>
+</section>
+<!--::subscribe_area part end::-->
 <?php
 include 'footer.php';
 ?>
