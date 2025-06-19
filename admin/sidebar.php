@@ -31,26 +31,32 @@
                 </li>
                 <li class="nav-item">
                     <a href="category_list.php" class="collapsed">
-                        <i class="fas fa-chevron-circle-right"></i>
+                        <i class="fas fa-th-large"></i>
                         <p>Category</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="product_list.php" class="collapsed">
-                        <i class="fas fa-chevron-circle-right"></i>
+                        <i class="fas fa-shopping-bag"></i>
                         <p>Product</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="customer_list.php" class="collapsed">
-                        <i class="fas fa-chevron-circle-right"></i>
-                        <p>customer</p>
+                        <i class="fas fa-user"></i>
+                        <p>Customer</p>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="feature_list.php" class="collapsed">
-                        <i class="fas fa-chevron-circle-right"></i>
-                        <p>Fratured</p>
+                        <i class="fas fa-star"></i>
+                        <p>Featured</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order_list.php" class="collapsed">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Orders</p>
                     </a>
                 </li>
 
