@@ -74,8 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mysqli_commit($conn);
         
         // Redirect to success page after successful order
-        header("Location: order_success.php?order_id=$order_id");
-        exit();
+     
     } catch (Exception $e) {
         mysqli_rollback($conn);
         $error = "Error processing your order: " . $e->getMessage();
@@ -245,10 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <span>Shipping</span>
                             <strong class="text-success">FREE</strong>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tax</span>
-                            <strong>%.5.00</strong>
-                        </div>
+                      
                         <div class="d-flex justify-content-between fw-bold fs-5 mt-3 pt-2 border-top">
                             <span>Total</span>
                             <strong class="text-primary">Rs.<?php echo number_format($total, 2); ?></strong>
