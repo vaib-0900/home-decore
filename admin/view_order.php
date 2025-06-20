@@ -128,7 +128,7 @@ $items_result = mysqli_query($conn, $items_query);
                             <div class="col-sm-6 mb-3 mb-sm-0">
                                 <h6 class="text-muted small mb-1">Order Status</h6>
                                 <span class="badge bg-<?= 
-                                    $order['status'] == 'Completed' ? 'success' : 
+                                    $order['status'] == 'peakging' ? 'success' : 
                                     ($order['status'] == 'Processing' ? 'warning' : 
                                     ($order['status'] == 'Cancelled' ? 'danger' : 'info')) 
                                 ?>">

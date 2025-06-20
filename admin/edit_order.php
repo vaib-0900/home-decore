@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="order_status">Order Status</label>
                                 <select name="order_status" class="form-control" required>
                                     <option value="Pending" <?php if ($order['status'] == 'Pending') echo 'selected'; ?>>Pending</option>
-                                    <option value="Completed" <?php if ($order['status'] == 'Completed') echo 'selected'; ?>>Completed</option>
+                                    <option value="Packing" <?php if ($order['status'] == 'Packing') echo 'selected'; ?>>Packing</option>
                                     <option value="Shipped" <?php if ($order['status'] == 'Shipped') echo 'selected'; ?>>Shipped</option>
                                     <option value="Delivered" <?php if ($order['status'] == 'Delivered') echo 'selected'; ?>>Delivered</option> 
                                     <option value="Cancelled" <?php if ($order['status'] == 'Cancelled') echo 'selected'; ?>>Cancelled</option>
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <hr>
                         <div class="text-center">
-                            <div class="huge">$<?php echo number_format($order['total_amount'], 2); ?></div>
+                            <div class="huge">RS<?php echo number_format($order['total_amount'], 2); ?></div>
                             <div>Total Amount</div>
                         </div>
                     </div>

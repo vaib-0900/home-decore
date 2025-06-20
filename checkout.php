@@ -163,49 +163,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="mb-4">
                             <h5 class="mb-3 text-primary"><i class="fas fa-credit-card me-2"></i>Payment Method</h5>
                             <div class="row g-3">
+                                
                                 <div class="col-12">
                                     <div class="form-check card p-3 mb-2 border">
-                                        <input id="cod" name="payment_method" type="radio" class="form-check-input align-middle mt-1" value="COD" checked required>
+                                        <input id="cod" name="payment_method" type="radio" class="form-check-input align-middle mt-1" value="Cash on Delivery">
                                         <label class="form-check-label d-flex align-items-center" for="cod">
-                                            <i class="fas fa-money-bill-wave fs-4 me-3 text-success"></i>
+                                            <i class="fas fa-money-bill-wave fs-4 me-3 text-warning"></i>
                                             <div>
-                                                <span class="d-block fw-bold">Cash on Delivery (COD)</span>
-                                                <small class="text-muted">Pay with cash upon delivery</small>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="form-check card p-3 mb-2 border">
-                                        <input id="credit" name="payment_method" type="radio" class="form-check-input align-middle mt-1" value="Credit Card">
-                                        <label class="form-check-label d-flex align-items-center" for="credit">
-                                            <i class="fab fa-cc-visa fs-4 me-3 text-primary"></i>
-                                            <div>
-                                                <span class="d-block fw-bold">Credit/Debit Card</span>
-                                                <small class="text-muted">Pay using your credit or debit card</small>
+                                                <span class="d-block fw-bold">Cash on Delivery</span>
+                                                <small class="text-muted">Pay with cash when your order is delivered</small>
                                             </div>
                                         </label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-check card p-3 border">
-                                        <input id="paypal" name="payment_method" type="radio" class="form-check-input align-middle mt-1" value="PayPal">
-                                        <label class="form-check-label d-flex align-items-center" for="paypal">
-                                            <i class="fab fa-paypal fs-4 me-3 text-info"></i>
+                                        <input id="qr" name="payment_method" type="radio" class="form-check-input align-middle mt-1" value="QR Code">
+                                        <label class="form-check-label d-flex align-items-center" for="qr">
+                                            <i class="fas fa-qrcode fs-4 me-3 text-success"></i>
                                             <div>
-                                                <span class="d-block fw-bold">PayPal</span>
-                                                <small class="text-muted">Pay securely with your PayPal account</small>
+                                                <span class="d-block fw-bold">QR Code Payment</span>
+                                                <small class="text-muted">Scan the QR code to complete payment</small>
                                             </div>
                                         </label>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- QR Code Payment Section (hidden by default) -->
+                            <div id="qr-payment-section" class="mt-4 p-4 border rounded" style="display: none;">
+                                <h6 class="mb-3 text-center">Scan this QR code to pay</h6>
+                                <div class="text-center mb-3">
+                                    <!-- Replace with your actual QR code image -->
+                                    <img src="img/payment QR.jpg" alt="Payment QR Code" class="img-fluid" style="max-width: 250px;">
+                                </div>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Please complete the payment and upload the screenshot below.
+                                </div>
+                                <div class="mb-3">
+                                    <label for="payment-proof" class="form-label">Upload Payment Proof</label>
+                                    <input type="file" class="form-control" id="payment-proof" name="payment_proof">
+                                </div>
+                            </div>
                         </div>
+                        <?php if (isset($order_id)): ?>
+                            <div class="alert alert-success alert-dismissible fade show mb-4">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Your order has been placed successfully! Your Order ID is <strong>#<?php echo $order_id; ?></strong>.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif; ?>
 
                         <div class="d-grid">
-                            <button class="btn btn-primary btn-lg py-3" type="submit">
-                                <i class="fas fa-lock me-2"></i>Place Order Securely
-                            </button>
+                            <?php if (isset($order_id)): ?>
+                                <a href="confirmation.php?order_id=<?php echo $order_id; ?>" class="btn btn-success btn-lg py-3">
+                                    <i class="fas fa-check-circle me-2"></i>View Order Confirmation
+                                </a>
+                            <?php else: ?>
+                                <button class="btn btn-primary btn-lg py-3" type="submit">
+                                    <i class="fas fa-lock me-2"></i>Place Order Securely
+                                </button>
+                            <?php endif; ?>
                         </div>
                     </form>
                 </div>
@@ -310,6 +329,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Show/hide QR code section based on payment method selection
+    const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
+    const qrPaymentSection = document.getElementById('qr-payment-section');
+    
+    paymentMethodRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'QR Code') {
+                qrPaymentSection.style.display = 'block';
+            } else {
+                qrPaymentSection.style.display = 'none';
+            }
+        });
+    });
+    
     // Add animation to payment method selection
     const paymentOptions = document.querySelectorAll('.form-check.card');
     paymentOptions.forEach(option => {
@@ -318,6 +351,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('border-primary');
             const radio = this.querySelector('input[type="radio"]');
             if (radio) radio.checked = true;
+            
+            // Trigger change event to show/hide QR code section
+            radio.dispatchEvent(new Event('change'));
         });
     });
 });

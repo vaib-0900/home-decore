@@ -56,11 +56,12 @@ include('db_connection.php');
                                         // Determine status badge color
                                         $status_class = '';
                                         switch(strtolower($row['status'])) {
-                                            case 'completed': $status_class = 'success'; break;
+                                            case 'packing': $status_class = 'info'; break;
                                             case 'pending': $status_class = 'warning'; break;
-                                            case 'processing': $status_class = 'info'; break;
+                                            case 'processing': $status_class = 'primary'; break;
                                             case 'cancelled': $status_class = 'danger'; break;
-                                            case 'shipped': $status_class = 'primary'; break;
+                                            case 'shipped': $status_class = 'secondary'; break;
+                                            case 'delivered': $status_class = 'success'; break;
                                             default: $status_class = 'secondary';
                                         }
                                     ?>
