@@ -332,47 +332,177 @@ $item_count = mysqli_num_rows($items_result);
                     <div class="card-body">
                         <!-- Enhanced Progress Tracker -->
                         <!-- Enhanced Progress Tracker -->
-                         <div class="progress-tracker">
-                            <h6 class="text-uppercase small fw-bold mb-3 text-gray-600">Order Status</h6>
-                            <ul class="step-progress">
-                                <li class="step-progress__step <?php echo ($order['status'] == 'Pending') ? 'is-active' : ((in_array($order['status'], ['Processing', 'Packing', 'Shipped', 'Delivered', 'Cancelled'])) ? 'is-complete' : ''); ?>">
-                                    <span class="step-progress__step-title">Pending</span>
-                                    <span class="step-progress__step-icon">
-                                        <i class="fas fa-hourglass-start"></i>
-                                    </span>
-                                </li>
-                                <li class="step-progress__step <?php echo ($order['status'] == 'Processing') ? 'is-active' : ((in_array($order['status'], ['Packing', 'Shipped', 'Delivered', 'Cancelled'])) ? 'is-complete' : ''); ?>">
-                                    <span class="step-progress__step-title">Processing</span>
-                                    <span class="step-progress__step-icon">
-                                        <i class="fas fa-clipboard-check"></i>
-                                    </span>
-                                </li>
-                                <li class="step-progress__step <?php echo ($order['status'] == 'Packing') ? 'is-active' : ((in_array($order['status'], ['Shipped', 'Delivered', 'Cancelled'])) ? 'is-complete' : ''); ?>">
-                                    <span class="step-progress__step-title">Packing</span>  <!-- Changed from Completed -->
-                                    <span class="step-progress__step-icon">
-                                        <i class="fas fa-box"></i>  <!-- Changed icon to box -->
-                                    </span>
-                                </li>
-                                <li class="step-progress__step <?php echo ($order['status'] == 'Shipped') ? 'is-active' : ((in_array($order['status'], ['Delivered', 'Cancelled'])) ? 'is-complete' : ''); ?>">
-                                    <span class="step-progress__step-title">Shipped</span>
-                                    <span class="step-progress__step-icon">
-                                        <i class="fas fa-shipping-fast"></i>
-                                    </span>
-                                </li>
-                                <li class="step-progress__step <?php echo ($order['status'] == 'Delivered') ? 'is-active' : (($order['status'] == 'Cancelled') ? 'is-complete' : ''); ?>">
-                                    <span class="step-progress__step-title">Delivered</span>
-                                    <span class="step-progress__step-icon">
-                                        <i class="fas fa-box-open"></i>
-                                    </span>
-                                </li>
-                                <li class="step-progress__step <?php echo ($order['status'] == 'Cancelled') ? 'is-active is-cancelled' : ''; ?>">
-                                    <span class="step-progress__step-title">Cancelled</span>
-                                    <span class="step-progress__step-icon">
-                                        <i class="fas fa-times-circle"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
+                       <div class="progress-tracker">
+    <h6 class="text-uppercase small fw-bold mb-3 text-gray-600">Order Status</h6>
+    <ul class="step-progress">
+        <!-- Progress line -->
+        <div class="step-progress__bar" style="width: <?php 
+            if ($order['status'] == 'Pending') echo '10%';
+            elseif ($order['status'] == 'Processing') echo '20%';
+            elseif ($order['status'] == 'Packing') echo '40%';
+            elseif ($order['status'] == 'Shipped') echo '60%';
+            elseif ($order['status'] == 'Delivered') echo '84%';
+            elseif ($order['status'] == 'Cancelled') echo '100%';
+            else echo '0%';
+        ?>;"></div>
+        
+        <!-- Steps -->
+        <li class="step-progress__step <?php echo (($order['status'] == 'Pending') ? 'is-active' : (in_array($order['status'], ['Processing', 'Packing', 'Shipped', 'Delivered', 'Cancelled']))) ? 'is-complete' : ''; ?>">
+            <span class="step-progress__step-title">Pending</span>
+            <span class="step-progress__step-icon">
+                <i class="fas fa-hourglass-start"></i>
+            </span>
+        </li>
+        <li class="step-progress__step <?php echo (($order['status'] == 'Processing') ? 'is-active' : (in_array($order['status'], ['Packing', 'Shipped', 'Delivered', 'Cancelled']))) ? 'is-complete' : ''; ?>">
+            <span class="step-progress__step-title">Processing</span>
+            <span class="step-progress__step-icon">
+                <i class="fas fa-clipboard-check"></i>
+            </span>
+        </li>
+        <li class="step-progress__step <?php echo (($order['status'] == 'Packing') ? 'is-active' : (in_array($order['status'], ['Shipped', 'Delivered', 'Cancelled']))) ? 'is-complete' : ''; ?>">
+            <span class="step-progress__step-title">Packing</span>
+            <span class="step-progress__step-icon">
+                <i class="fas fa-box"></i>
+            </span>
+        </li>
+        <li class="step-progress__step <?php echo (($order['status'] == 'Shipped') ? 'is-active' : (in_array($order['status'], ['Delivered', 'Cancelled']))) ? 'is-complete' : ''; ?>">
+            <span class="step-progress__step-title">Shipped</span>
+            <span class="step-progress__step-icon">
+                <i class="fas fa-shipping-fast"></i>
+            </span>
+        </li>
+        <li class="step-progress__step <?php echo ((($order['status'] == 'Delivered') ? 'is-active' : ($order['status'] == 'Cancelled'))) ? 'is-complete' : ''; ?>">
+            <span class="step-progress__step-title">Delivered</span>
+            <span class="step-progress__step-icon">
+                <i class="fas fa-box-open"></i>
+            </span>
+        </li>
+        <li class="step-progress__step <?php echo ($order['status'] == 'Cancelled') ? 'is-active is-cancelled' : ''; ?>">
+            <span class="step-progress__step-title">Cancelled</span>
+            <span class="step-progress__step-icon">
+                <i class="fas fa-times-circle"></i>
+            </span>
+        </li>
+    </ul>
+</div>
+
+<style>
+    .progress-tracker {
+        position: relative;
+        padding: 20px 0;
+    }
+    
+    .step-progress {
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1rem;
+        position: relative;
+    }
+    
+    .step-progress::before {
+        content: "";
+        position: absolute;
+        top: 24px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: #e9ecef;
+        z-index: 1;
+        border-radius: 2px;
+    }
+    
+    .step-progress__bar {
+        position: absolute;
+        top: 24px;
+        left: 0;
+        height: 4px;
+        background-color: #4e73df;
+        z-index: 2;
+        transition: width 0.5s ease;
+        border-radius: 2px;
+    }
+    
+    .step-progress__step {
+        position: relative;
+        flex: 1;
+        text-align: center;
+        z-index: 2;
+    }
+    
+    .step-progress__step:last-child {
+        flex: 0;
+    }
+    
+    .step-progress__step-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 8px;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        color: #6c757d;
+        font-size: 1.25rem;
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+    
+    .step-progress__step-title {
+        display: block;
+        font-size: 0.875rem;
+        color: #6c757d;
+        white-space: nowrap;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    /* Active step */
+    .step-progress__step.is-active .step-progress__step-icon {
+        background-color: #4e73df;
+        color: white;
+        box-shadow: 0 0 0 6px rgba(78, 115, 223, 0.2);
+    }
+    
+    .step-progress__step.is-active .step-progress__step-title {
+        color: #4e73df;
+        font-weight: 600;
+    }
+    
+    /* Completed steps */
+    .step-progress__step.is-complete .step-progress__step-icon {
+        background-color: #1cc88a;
+        color: white;
+    }
+    
+    .step-progress__step.is-complete .step-progress__step-title {
+        color: #1cc88a;
+    }
+    
+    /* Cancelled state */
+    .step-progress__step.is-cancelled .step-progress__step-icon {
+        background-color: #e74a3b;
+        color: white;
+    }
+    
+    .step-progress__step.is-cancelled .step-progress__step-title {
+        color: #e74a3b;
+    }
+</style>
+
+<script>
+    // Optional: Add smooth animation to the progress bar
+    document.addEventListener('DOMContentLoaded', function() {
+        const progressBar = document.querySelector('.step-progress__bar');
+        // Trigger the animation by resetting the width
+        setTimeout(() => {
+            progressBar.style.width = progressBar.style.width;
+        }, 100);
+    });
+</script>
 
 
                         <!-- Order Items -->

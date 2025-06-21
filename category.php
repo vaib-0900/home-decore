@@ -142,23 +142,27 @@ $mysqli->close();
 
 <body>
 
- <!--================Home Banner Area =================-->
-  <!-- breadcrumb start-->
-  <section class="breadcrumb breadcrumb_bg">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <div class="breadcrumb_iner">
-            <div class="breadcrumb_iner_item">
-              <h2>Category</h2>
-              <p>Home <span>-</span> category</p>
+    <!--================Home Banner Area =================-->
+    <!-- breadcrumb start-->
+    <section class="breadcrumb breadcrumb_bg">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="breadcrumb_iner">
+                        <div class="breadcrumb_iner_item">
+                            <h2>Category</h2>
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none">Home</a></li>
+                                <li class="breadcrumb-item"><a href="shop.php" class="text-decoration-none">shop</a></li>
+                                <li class="breadcrumb-item"><a href="category.php" class="text-decoration-none">Category</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </section>
-  <!-- breadcrumb start-->
+    </section>
+    <!-- breadcrumb start-->
 
     <div class="container py-4 mt-5">
         <h2 class="text-center mb-5 mt">Our categories Selection</h2>
@@ -170,12 +174,8 @@ $mysqli->close();
                     <?php foreach ($category['tbl_product'] as $product): ?>
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="card h-100">
-                                <div class="position-relative">
-                                    <span class="badge rounded-pill badge-offer">15% OFF</span>
-                                    <img src="admin/<?= htmlspecialchars($product['product_image']) ?>"
-                                        class="card-img-top"
-                                        alt="<?= htmlspecialchars($product['product_name']) ?>">
-                                </div>
+                                <a href="single-product.php?id=<?= htmlspecialchars($product['product_id']) ?>" class="stretched-link"></a>
+                                <img src="admin/<?= htmlspecialchars($product['product_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($product['product_name']) ?>">
 
                                 <div class="card-body">
                                     <h5 class="card-title"><?= htmlspecialchars($product['product_name']) ?></h5>
@@ -183,9 +183,9 @@ $mysqli->close();
                                     <div class="d-flex justify-content-center mt-3">
                                         <a href="addtocart.php?id=<?= htmlspecialchars($product['product_id']) ?>"
                                             class="btn btn-primary">Add to Cart</a>
-                                            <a href="wishlist.php?id=<?= htmlspecialchars($product['product_id']) ?>" class="btn btn-outline-secondary ms-2">
-                                                <i class="bi bi-heart"></i> Wishlist
-                                            </a>
+                                        <a href="wishlist.php?id=<?= htmlspecialchars($product['product_id']) ?>" class="btn btn-outline-secondary ms-2">
+                                            <i class="bi bi-heart"></i> Wishlist
+                                        </a>
                                     </div>
                                 </div>
                             </div>

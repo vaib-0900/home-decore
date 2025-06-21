@@ -17,6 +17,7 @@ include 'header.php';
         </div>
     </div>
 </section>
+
 <!-- breadcrumb start-->
 <!-- breadcrumb start-->
 
@@ -198,14 +199,14 @@ include 'header.php';
                                     <div class="product-img-container position-relative overflow-hidden" style="height: 250px;">
                                         <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
                                             <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_image']) ?>">
-                                           
-                                        </a>
-                                        <div class="product-actions position-absolute top-0 end-0 m-2">                         
-                                           
+                                            <div class="product-actions position-absolute top-0 end-0 m-2">                         
                                             <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $row['product_id'] ?>" data-bs-toggle="tooltip" title="Quick View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
+                                           
                                         </div>
+                                        </a>
+                                       
                                     </div>
 
                                     <!-- Product Body -->

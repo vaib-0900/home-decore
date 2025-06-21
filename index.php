@@ -103,11 +103,15 @@ if (!isset($conn)) {
 
                                 <!-- Product Image -->
                                 <div class="position-relative overflow-hidden text-center">
-                                    <a href="single_productview.php?product_id=<?= $row['product_id'] ?>">
-                                        <img src="admin/<?= $row['product_image'] ?>"
-                                            class="card-img-to object-fit-cover"
-                                            alt="<?= htmlspecialchars($row['product_name']) ?>">
-                                    </a>
+                                    <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                                            <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_image']) ?>">
+                                            <div class="product-actions position-absolute top-0 end-0 m-2">                         
+                                            <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $row['product_id'] ?>" data-bs-toggle="tooltip" title="Quick View">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                           
+                                        </div>
+                                        </a>
 
                                 </div>
 
@@ -125,7 +129,7 @@ if (!isset($conn)) {
                                     </div>
 
                                     <h5 class="card-title">
-                                        <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none text-dark">
+                                        <a href="single_product.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none text-dark">
                                             <?= htmlspecialchars($row['product_name']) ?>
                                         </a>
                                     </h5>
@@ -143,7 +147,7 @@ if (!isset($conn)) {
                                             <?php endif; ?>
                                         </div>
                                         <div class="action-buttons d-flex gap-2 flex-wrap">
-                                            <a href="single-product.php?product_id=<?= $row['product_id'] ?>"
+                                            <a href="single-product.php?id=<?= $row['product_id'] ?>"
                                                 class="btn btn-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
                                                 <i class="fas fa-eye me-1"></i>
                                                 <span>View</span>
