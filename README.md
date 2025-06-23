@@ -15,8 +15,6 @@ product destails image
 2.
 ![alt text](image-5.png)
 3.
-![alt text](<Screenshot 2025-06-21 130901.png>)
-4.
 ![alt text](<Screenshot 2025-06-21 130957.png>)
 
 add to cart image 
