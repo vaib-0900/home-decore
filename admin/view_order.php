@@ -209,40 +209,6 @@ $items_result = mysqli_query($conn, $items_query);
             </div>
         </div>
 
-        <!-- Order Notes & Actions -->
-        <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow">
-                    <div class="card-header bg-white py-3">
-                        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-sticky-note me-2"></i>Order Notes</h6>
-                    </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-0">No notes have been added for this order.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow">
-                    <div class="card-header bg-white py-3">
-                        <h6 class="m-0 font-weight-bold text-primary"><i class="fas fa-cog me-2"></i>Order Actions</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="edit_order.php?id=<?= $order['order_id'] ?>" class="btn btn-outline-primary me-md-2">
-                                <i class="fas fa-pencil-alt me-1"></i> Edit Order
-                            </a>
-                            <button class="btn btn-outline-success me-md-2">
-                                <i class="fas fa-truck me-1"></i> Update Shipping
-                            </button>
-                            <button class="btn btn-outline-danger">
-                                <i class="fas fa-times me-1"></i> Cancel Order
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Thank You Message -->
         <div class="text-center py-4 bg-light rounded mb-4">
             <h5 class="mb-3">Thank you for your order!</h5>
