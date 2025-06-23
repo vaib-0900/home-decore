@@ -82,6 +82,29 @@ $stats = mysqli_fetch_assoc($stats_result);
             <!-- Stats Cards - UPDATED to show Packing instead of Completed -->
             <div class="row g-4 mb-4 ">
                 <div class="col-md-4">
+                    <div class="card bg-success bg-opacity-10 border-0 rounded-3 h-100 card-hover">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-25 p-3 rounded-circle me-3">
+                                    <i class="fas fa-check-circle fa-lg text-success"></i>
+                                </div>
+                                <div>
+                                    <h6 class="card-title text-uppercase text-muted small mb-1">Delivered</h6>
+                                    <h3 class="mb-0">
+                                        <?php
+                                        // Count delivered orders for this customer
+                                        $delivered_query = "SELECT COUNT(*) as delivered FROM orders WHERE customer_id = '$customer_id' AND status = 'Delivered'";
+                                        $delivered_result = mysqli_query($conn, $delivered_query);
+                                        $delivered_count = mysqli_fetch_assoc($delivered_result)['delivered'];
+                                        echo $delivered_count;
+                                        ?>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="card bg-primary bg-opacity-10 border-0 rounded-3 h-100 card-hover">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
@@ -111,21 +134,7 @@ $stats = mysqli_fetch_assoc($stats_result);
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card bg-warning bg-opacity-10 border-0 rounded-3 h-100 card-hover">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-warning bg-opacity-25 p-3 rounded-circle me-3">
-                                    <i class="fas fa-clock fa-lg text-warning"></i>
-                                </div>
-                                <div>
-                                    <h6 class="card-title text-uppercase text-muted small mb-1">Processing</h6>
-                                    <h3 class="mb-0"><?php echo $stats['processing']; ?></h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+             
             </div>
             
             <?php if ($total_orders > 0): ?>
