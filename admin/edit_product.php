@@ -120,7 +120,7 @@ if (isset($_POST['update_product'])) {
                         <textarea class="form-control" id="product_description" name="product_description" required><?php echo $product['product_description']; ?></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary" name="update_product">Update Product</button>
-
+                    <a href="product_list.php" class="btn btn-secondary" style="margin-left:10px;">Back to Product List</a>
 
                 </form>
             </div>

@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         Order Information
                     </div>
                     <div class="panel-body">
-                        <form action="" method="POST" enctype="multipart/form-data">
+                        <form action="order_list.php" method="POST" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="customer_id">Customer ID</label>
                                 <input type="text" name="customer_id" class="form-control" 
