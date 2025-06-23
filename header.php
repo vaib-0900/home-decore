@@ -59,7 +59,7 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
                                         <a class="dropdown-item" href="shop.php"> shop </a>
                                         <a class="dropdown-item" href="category.php">category </a>
-                                        <a class="dropdown-item" href="single-product.php">product details</a>
+                                    
                                         
                                     </div>
                                 </li>
