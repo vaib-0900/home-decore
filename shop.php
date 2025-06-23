@@ -245,7 +245,7 @@ include 'header.php';
                                                 <i class="fas fa-cart-plus me-1"></i>
                                                 <span>Add</span>
                                             </a>
-                                            <a href="wishlist-insert.php?id=<?= $row['product_id'] ?>"
+                                            <a href="wishlist-insert.php?product_id=<?= $row['product_id'] ?>"
                                                 class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
                                                  <i class="far fa-heart"></i>
 

@@ -175,7 +175,7 @@ if (isset($_GET['id'])) {
                         <a href="addtocart.php?id=<?php echo $product['product_id']; ?>" class="btn btn-primary px-4 py-2 flex-grow-1">
                             <i class="bi bi-cart-plus me-2"></i> Add to Cart
                         </a>
-                        <a href="wishlist.php" class="btn btn-outline-danger px-4 py-2">
+                        <a href="wishlist-insert.php?product_id=<?= $product['product_id'] ?>" class="btn btn-outline-danger px-4 py-2">
                             <i class="bi bi-heart me-2"></i> Add to Wishlist
                         </a>
                     </div>
