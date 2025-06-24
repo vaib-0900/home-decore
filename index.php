@@ -1,10 +1,6 @@
 <?php
 include 'header.php';
-// Ensure database connection is available
-if (!isset($conn)) {
-    // Update the path to your actual database connection file if different
-    include 'admin/db_connection.php';
-}
+include 'db_connection.php';
 ?>
 <!-- banner part start-->
 <section class="banner_part">

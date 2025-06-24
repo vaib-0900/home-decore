@@ -1,8 +1,38 @@
 <?php
- session_start();
- if(!isset($_SESSION["login"])){
-    echo "<script>window.location.href='login.php';</script>";
- }
+session_start();
+if(!isset($_SESSION["login"])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Initialize counts
+$cart_count = 0;
+$wishlist_count = 0;
+
+if(isset($_SESSION['customer_id'])) {
+    include "db_connection.php";
+    $customer_id = $_SESSION['customer_id'];
+    
+    // Get cart count (sum of quantities)
+    $cart_query = "SELECT SUM(cart_qty) as count FROM tbl_cart WHERE cart_customer_id = ?";
+    $stmt = mysqli_prepare($conn, $cart_query);
+    mysqli_stmt_bind_param($stmt, "i", $customer_id);
+    mysqli_stmt_execute($stmt);
+    $cart_result = mysqli_stmt_get_result($stmt);
+    $cart_data = mysqli_fetch_assoc($cart_result);
+    $cart_count = $cart_data['count'] ?? 0;
+    
+    // Get wishlist count
+    $wishlist_query = "SELECT COUNT(*) as count FROM tbl_wishlist WHERE wishlist_customer = ?";
+    $stmt = mysqli_prepare($conn, $wishlist_query);
+    mysqli_stmt_bind_param($stmt, "i", $customer_id);
+    mysqli_stmt_execute($stmt);
+    $wishlist_result = mysqli_stmt_get_result($stmt);
+    $wishlist_data = mysqli_fetch_assoc($wishlist_result);
+    $wishlist_count = $wishlist_data['count'] ?? 0;
+    
+    mysqli_close($conn);
+}
 ?>
 <!doctype html>
 <html lang="zxx">
@@ -30,6 +60,35 @@
     <link rel="stylesheet" href="css/slick.css">
     <!-- style CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .badge-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff3368;
+            color: white;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .nav-icon {
+            position: relative;
+            font-size: 1.25rem;
+            color: #495057;
+            transition: all 0.3s;
+        }
+        .nav-icon:hover {
+            color: #ff3368;
+        }
+        .hearer_icon {
+            gap: 1rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -57,10 +116,8 @@
                                         Shop
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
-                                        <a class="dropdown-item" href="shop.php"> shop </a>
-                                        <a class="dropdown-item" href="category.php">category </a>
-                                    
-                                        
+                                        <a class="dropdown-item" href="shop.php">Shop</a>
+                                        <a class="dropdown-item" href="category.php">Categories</a>
                                     </div>
                                 </li>
                                 <li class="nav-item">
@@ -69,39 +126,53 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="blog.php" id="navbarDropdown_3"
                                         role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        pages
+                                        Pages
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_2">
-                                        <a class="dropdown-item" href="wishlist.php"> shopping Wishlist</a>
-                                        <a class="dropdown-item" href="tracking.php">tracking</a>
-                                        <a class="dropdown-item" href="checkout.php">product checkout</a>
-                                        <a class="dropdown-item" href="cart_list.php">shopping cart</a>
-                                        <a class="dropdown-item" href="confirmation.php">confirmation</a>
-                
+                                        <a class="dropdown-item" href="wishlist.php">Wishlist</a>
+                                        <a class="dropdown-item" href="tracking.php">Order Tracking</a>
+                                        <a class="dropdown-item" href="checkout.php">Checkout</a>
+                                        <a class="dropdown-item" href="cart_list.php">Shopping Cart</a>
+                                        <a class="dropdown-item" href="confirmation.php">Confirmation</a>
                                     </div>
                                 </li>
-                              . 
                                 <li class="nav-item">
                                     <a class="nav-link" href="contact.php">Contact</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="register.php">Register</a>
-                                </li>
-                                <li  class="nav-item">
-                                    <a class="nav-link" href="login_out.php">Logout</a>
-
-                                </li>
+                                <?php if(!isset($_SESSION["login"])): ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="register.php">Register</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="login.php">Login</a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="login_out.php">Logout</a>
+                                    </li>
+                                <?php endif; ?>
                             </ul>
                         </div>
-                        <div class="hearer_icon d-flex">
-                            <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
-                            <a href="wishlist.php"><i class="ti-heart"></i></a>
-                            <a href="cart_list.php"><i class="ti-shopping-cart"></i></a>
+                        <div class="hearer_icon d-flex align-items-center">
+                            <a id="search_1" href="javascript:void(0)" class="nav-icon">
+                                <i class="ti-search"></i>
+                            </a>
+                            <a href="wishlist.php" class="nav-icon position-relative">
+                                <i class="ti-heart"></i>
+                                <?php if($wishlist_count > 0): ?>
+                                    <span class="badge-count"><?= $wishlist_count ?></span>
+                                <?php endif; ?>
+                            </a>
+                            <a href="cart_list.php" class="nav-icon position-relative">
+                                <i class="ti-shopping-cart"></i>
+                                <?php if($cart_count > 0): ?>
+                                    <span class="badge-count"><?= $cart_count ?></span>
+                                <?php endif; ?>
+                            </a>
                         </div>
                     </nav>
                 </div>
             </div>
         </div>
-       
     </header>
     <!-- Header part end-->

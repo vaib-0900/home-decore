@@ -2,22 +2,27 @@
 include "header.php";
 include "db_connection.php";
 
+// Database connection
 $mysqli = new mysqli("localhost", "root", "", "admin_home");
 if ($mysqli->connect_errno) {
     die("Failed to connect: " . $mysqli->connect_error);
 }
 
-// Fetch categories
+// Fetch categories with products
 $categories = [];
 $cat_result = $mysqli->query("SELECT category_id, category_name FROM tbl_category");
 while ($cat = $cat_result->fetch_assoc()) {
-    // Fetch products for each category
-    $prod_result = $mysqli->query("SELECT product_id, product_name, product_image, product_price FROM tbl_product WHERE add_category = " . (int)$cat['category_id']);
+    // Fetch products for each category using prepared statement
+    $stmt = $mysqli->prepare("SELECT product_id, product_name, product_image, product_price FROM tbl_product WHERE add_category = ?");
+    $stmt->bind_param("i", $cat['category_id']);
+    $stmt->execute();
+    $prod_result = $stmt->get_result();
+    
     $products = [];
     while ($prod = $prod_result->fetch_assoc()) {
         $products[] = $prod;
     }
-    $cat['tbl_product'] = $products;
+    $cat['products'] = $products;
     $categories[] = $cat;
 }
 $mysqli->close();
@@ -29,178 +34,181 @@ $mysqli->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>nestfy home Categories</title>
+    <title>Nestify Home - Categories</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #2c3e50;
-            --accent-color: #e74c3c;
-            --light-bg: #f8f9fa;
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
         }
 
-        body {
-            background-color: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        .category-header {
+            position: relative;
+            padding: 60px 0;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .breadcrumb-item a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .category-title {
-            color: var(--secondary-color);
+            color: var(--secondary);
             font-weight: 700;
-            border-bottom: 3px solid var(--primary-color);
+            border-bottom: 3px solid var(--primary);
             display: inline-block;
             padding-bottom: 8px;
             margin: 2rem 0 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        .card {
+        .product-card {
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             transition: all 0.3s ease;
-            height: 100%;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            height: 100%;
         }
 
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .card-img-top {
+        .product-img {
             height: 200px;
             object-fit: cover;
+            width: 100%;
         }
 
-        .card-body {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-            margin-bottom: 0.75rem;
-        }
-
-        .price {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border: none;
-            padding: 0.5rem;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-danger {
-            background-color: var(--accent-color);
-            border: none;
-            padding: 0.5rem;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-outline-secondary {
-            border-color: #ddd;
-            padding: 0.5rem;
-        }
-
-        .badge-offer {
+        .product-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: var(--accent-color);
-            font-size: 0.8rem;
-            padding: 0.35rem 0.6rem;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: auto;
+        .product-price {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 0.9rem;
         }
 
         .action-buttons .btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 50px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .btn-wishlist {
+            border: 1px solid #dee2e6;
         }
     </style>
 </head>
 
 <body>
-
-    <!--================Home Banner Area =================-->
-    <!-- breadcrumb start-->
-    <section class="breadcrumb breadcrumb_bg">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="breadcrumb_iner">
-                        <div class="breadcrumb_iner_item">
-                            <h2>Category</h2>
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none">Home</a></li>
-                                <li class="breadcrumb-item"><a href="shop.php" class="text-decoration-none">shop</a></li>
-                                <li class="breadcrumb-item"><a href="category.php" class="text-decoration-none">Category</a></li>
-                            </ol>
-                        </div>
+  <!--================Home Banner Area =================-->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Category Products</h2>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- breadcrumb start-->
+    </div>
+</section>
 
-    <div class="container py-4 mt-5">
-        <h2 class="text-center mb-5 mt">Our categories Selection</h2>
+<!-- ================ category section start ================= -->
+
+    <!-- Categories Section -->
+    <div class="container py-5">
+        <h2 class="text-center mb-5">Browse Our Categories</h2>
 
         <?php foreach ($categories as $category): ?>
-            <div class="category-section mb-5">
-                <h2 class="category-title"><?= htmlspecialchars($category['category_name']) ?></h2>
-                <div class="row g-4">
-                    <?php foreach ($category['tbl_product'] as $product): ?>
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="card h-100">
-                                <a href="single-product.php?id=<?= htmlspecialchars($product['product_id']) ?>" class="stretched-link"></a>
-                                <img src="admin/<?= htmlspecialchars($product['product_image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($product['product_name']) ?>">
-
-                                <div class="card-body">
-                                    <h5 class="card-title"><?= htmlspecialchars($product['product_name']) ?></h5>
-                                    <div class="price">Rs.<?= number_format(htmlspecialchars($product['product_price']), 2) ?></div>
-                                    <div class="d-flex justify-content-center mt-3">
-                                        <a href="addtocart.php?id=<?= htmlspecialchars($product['product_id']) ?>"
-                                            class="btn btn-primary">Add to Cart</a>
-                                        <a href="wishlist.php?id=<?= htmlspecialchars($product['product_id']) ?>" class="btn btn-outline-secondary ms-2">
-                                            <i class="bi bi-heart"></i> Wishlist
+            <?php if (!empty($category['products'])): ?>
+                <div class="category-section mb-5">
+                    <h2 class="category-title"><?= htmlspecialchars($category['category_name']) ?></h2>
+                    <div class="row">
+                        <?php foreach ($category['products'] as $product): ?>
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="product-card">
+                                    <div class="position-relative">
+                                        <a href="single-product.php?id=<?= $product['product_id'] ?>">
+                                            <img src="admin/<?= htmlspecialchars($product['product_image']) ?>" 
+                                                 class="product-img" 
+                                                 alt="<?= htmlspecialchars($product['product_name']) ?>">
                                         </a>
+                                        <?php if (isset($product['original_price']) && $product['original_price'] > $product['product_price']): ?>
+                                            <?php $discount = round(($product['original_price'] - $product['product_price']) / $product['original_price'] * 100); ?>
+                                            <span class="product-badge">-<?= $discount ?>%</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="single-product.php?id=<?= $product['product_id'] ?>" class="text-decoration-none text-dark">
+                                                <?= htmlspecialchars($product['product_name']) ?>
+                                            </a>
+                                        </h5>
+                                        <div class="mb-2">
+                                            <span class="product-price">Rs. <?= number_format($product['product_price'], 2) ?></span>
+                                            <?php if (isset($product['original_price']) && $product['original_price'] > $product['product_price']): ?>
+                                                <small class="original-price ms-2">Rs. <?= number_format($product['original_price'], 2) ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="action-buttons d-flex">
+                                            <a href="addtocart.php?id=<?= $product['product_id'] ?>" 
+                                               class="btn btn-primary me-2">
+                                               <i class="fas fa-cart-plus me-1"></i> Add
+                                            </a>
+                                            <a href="wishlist-insert.php?product_id=<?= $product['product_id'] ?>" 
+                                               class="btn btn-outline-secondary btn-wishlist">
+                                               <i class="far fa-heart me-1"></i> Wishlist
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-            </div>
+            <?php endif; ?>
         <?php endforeach; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.0/dist/iconify-icon.min.js"></script>
+    <?php include "footer.php"; ?>
 </body>
-
 </html>
-<?php
-include "footer.php";
-?>
