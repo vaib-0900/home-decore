@@ -124,17 +124,20 @@ include 'header.php';
 </div>
          </div>
          <div class="col-md-6">
-          <div class="card border-0 shadow-sm h-100">
-              <img src="img/team2.jpg" class="card-img-top" alt="Vaibhav Shinde">
-              <div class="card-body text-center">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <!-- Image container with fixed aspect ratio -->
+            <div class="team-img-container" style="height: 300px; overflow: hidden;">
+                <img src="img/vaib.JPG" class="w-100 h-100 object-fit-cover" alt="Vaibhav Shinde - CEO & Head of Design">
+            </div>
+            <div class="card-body text-center p-4">
                <h5 class="fw-bold mb-1">Vaibhav Shinde</h5>
                <p class="text-muted mb-3">CEO & Head of Design</p>
                <p>Vaibhav's innovative designs have won multiple national awards.</p>
                <div class="d-flex justify-content-center">
-                <a href="#" class="text-decoration-none mx-2"><i class="fab fa-linkedin text-primary"></i></a>
-                <a href="#" class="text-decoration-none mx-2"><i class="fab fa-instagram text-primary"></i></a>
+                <a href="#" class="text-decoration-none mx-2" aria-label="LinkedIn profile"><i class="fab fa-linkedin text-primary"></i></a>
+                <a href="#" class="text-decoration-none mx-2" aria-label="Instagram profile"><i class="fab fa-instagram text-primary"></i></a>
                </div>
-              </div>
+            </div>
           </div>
          </div>
      </div>
