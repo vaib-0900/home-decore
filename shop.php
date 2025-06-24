@@ -2,8 +2,6 @@
 include 'header.php';
 ?>
 <!--================Home Banner Area =================-->
-<!-- breadcrumb start-->
-<!-- breadcrumb start-->
 <section class="breadcrumb breadcrumb_bg">
     <div class="container">
         <div class="row justify-content-center">
@@ -18,11 +16,7 @@ include 'header.php';
     </div>
 </section>
 
-<!-- breadcrumb start-->
-<!-- breadcrumb start-->
-
 <!-- ================ category section start ================= -->
-
 <section class="mt-5 mb-5" id="categories">
     <?php
     include "db_connection.php";
@@ -66,7 +60,6 @@ include 'header.php';
         </div>
     <?php endif; ?>
 </section>
-
 <!-- ================ category section end ================= -->
 
 <!-- ================ product section start ================= -->
@@ -86,11 +79,16 @@ include 'header.php';
                             <h6 class="mb-3 d-flex align-items-center">
                                 <i class="fas fa-tag me-2 text-muted"></i> Price Range
                             </h6>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span id="price-min" class="badge bg-light text-dark">Rs. 0</span>
-                                <span id="price-max" class="badge bg-primary">Rs. 10000</span>
+                            <div class="price-range-buttons">
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="0" data-max="1000000">All Prices</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="1000" data-max="3000">Rs. 1,000 - 3,000</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="3000" data-max="6000">Rs. 3,000 - 6,000</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="6000" data-max="10000">Rs. 6,000 - 10,000</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="10000" data-max="13000">Rs. 10,000 - 13,000</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="13000" data-max="20000">Rs. 13,000 - 20,000</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="20000" data-max="25000">Rs. 20,000 - 25,000</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="25000" data-max="30000">Rs. 25,000 - 30,000</button>
                             </div>
-                            <input type="range" class="form-range" id="price-range" min="0" max="10000" step="100">
                         </div>
 
                         <!-- Categories Filter -->
@@ -100,7 +98,6 @@ include 'header.php';
                             </h6>
                             <div class="filter-scroll" style="max-height: 200px; overflow-y: auto;">
                                 <?php
-                                include "db_connection.php";
                                 $categories = $conn->query("SELECT * FROM tbl_category");
                                 while ($cat = $categories->fetch_assoc()) {
                                     echo '<div class="form-check mb-2">
@@ -159,9 +156,17 @@ include 'header.php';
             <div class="col-lg-9 col-md-8">
                 <!-- Sorting Options -->
                 <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-3 shadow-sm">
-
                     <div class="text-muted">
                         <span id="showing-count"><?= $total_products ?></span> of <span id="total-count"><?= $total_products ?></span> products
+                    </div>
+                    <div class="sort-options">
+                        <select class="form-select form-select-sm" id="sort-products">
+                            <option value="default">Default Sorting</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Highest Rating</option>
+                            <option value="newest">Newest Arrivals</option>
+                        </select>
                     </div>
                 </div>
 
@@ -200,13 +205,11 @@ include 'header.php';
                                         <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
                                             <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_image']) ?>">
                                             <div class="product-actions position-absolute top-0 end-0 m-2">                         
-                                            <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $row['product_id'] ?>" data-bs-toggle="tooltip" title="Quick View">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                           
-                                        </div>
+                                                <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $row['product_id'] ?>" data-bs-toggle="tooltip" title="Quick View">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
                                         </a>
-                                       
                                     </div>
 
                                     <!-- Product Body -->
@@ -247,8 +250,7 @@ include 'header.php';
                                             </a>
                                             <a href="wishlist-insert.php?product_id=<?= $row['product_id'] ?>"
                                                 class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
-                                                 <i class="far fa-heart"></i>
-
+                                                <i class="far fa-heart"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -302,9 +304,32 @@ include 'header.php';
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
+        // Price range buttons functionality
+        let currentPriceRange = { min: 0, max: 1000000 };
+        const priceRangeButtons = document.querySelectorAll('.price-range-btn');
+        
+        priceRangeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                priceRangeButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Set current price range
+                currentPriceRange = {
+                    min: parseInt(this.getAttribute('data-min')),
+                    max: parseInt(this.getAttribute('data-max'))
+                };
+                
+                // Highlight the selected range
+                this.classList.remove('btn-outline-secondary');
+                this.classList.add('btn-primary');
+            });
+        });
+
         // Filter products based on selected criteria
         document.getElementById('apply-filters').addEventListener('click', function() {
-            const priceRange = parseInt(document.getElementById('price-range').value);
             const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(el => el.value);
             const selectedRatings = Array.from(document.querySelectorAll('.rating-filter:checked')).map(el => parseInt(el.value));
 
@@ -316,7 +341,7 @@ include 'header.php';
                 const category = card.dataset.category;
                 const rating = parseInt(card.dataset.rating);
 
-                const priceMatch = price <= priceRange;
+                const priceMatch = price >= currentPriceRange.min && price <= currentPriceRange.max;
                 const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(category);
                 const ratingMatch = selectedRatings.length === 0 || selectedRatings.some(r => rating >= r);
 
@@ -329,23 +354,57 @@ include 'header.php';
             });
 
             document.getElementById('showing-count').textContent = visibleCount;
+            
+            // Show message if no products match filters
+            if (visibleCount === 0) {
+                const noProductsMsg = document.createElement('div');
+                noProductsMsg.className = 'col-12 text-center py-5';
+                noProductsMsg.innerHTML = '<div class="alert alert-warning">No products match your filters. Try adjusting your criteria.</div>';
+                
+                const container = document.getElementById('products-container');
+                if (!container.querySelector('.alert-warning')) {
+                    container.appendChild(noProductsMsg);
+                }
+            } else {
+                const existingMsg = document.querySelector('.alert-warning');
+                if (existingMsg) {
+                    existingMsg.remove();
+                }
+            }
         });
 
         // Reset all filters
         document.getElementById('reset-filters').addEventListener('click', function() {
-            document.getElementById('price-range').value = 10000;
-            document.getElementById('price-max').textContent = 'Rs. 10000';
+            // Reset price range
+            currentPriceRange = { min: 0, max: 1000000 };
+            priceRangeButtons.forEach(btn => {
+                btn.classList.remove('active', 'btn-primary');
+                btn.classList.add('btn-outline-secondary');
+            });
+            
+            // Reset category and rating filters
             document.querySelectorAll('.category-filter, .rating-filter').forEach(el => el.checked = false);
+            
+            // Show all products
             document.querySelectorAll('.product-card').forEach(card => card.style.display = 'block');
             document.getElementById('showing-count').textContent = totalProducts;
+            
+            // Remove any no products message
+            const existingMsg = document.querySelector('.alert-warning');
+            if (existingMsg) {
+                existingMsg.remove();
+            }
         });
 
         // Sort products
         document.getElementById('sort-products').addEventListener('change', function() {
             const container = document.getElementById('products-container');
             const cards = Array.from(container.querySelectorAll('.product-card'));
+            
+            // Filter out hidden cards
+            const visibleCards = cards.filter(card => card.style.display !== 'none');
 
-            cards.sort((a, b) => {
+            visibleCards.sort((a, b) => {
                 const sortBy = this.value;
 
                 if (sortBy === 'price-low') {
@@ -362,12 +421,7 @@ include 'header.php';
             });
 
             // Re-append sorted cards
-            cards.forEach(card => container.appendChild(card));
-        });
-
-        // Update price range display
-        document.getElementById('price-range').addEventListener('input', function() {
-            document.getElementById('price-max').textContent = 'Rs. ' + this.value;
+            visibleCards.forEach(card => container.appendChild(card));
         });
 
         // Quick view functionality
@@ -397,6 +451,8 @@ include 'header.php';
     .breadcrumb {
         padding: 60px 0;
         position: relative;
+        background-size: cover;
+        background-position: center;
     }
 
     .breadcrumb:before {
@@ -483,6 +539,21 @@ include 'header.php';
 
     .object-fit-cover {
         object-fit: cover;
+    }
+    
+    .price-range-buttons .btn {
+        width: 100%;
+        text-align: left;
+        transition: all 0.3s;
+    }
+    
+    .price-range-buttons .btn.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+    
+    .price-range-buttons .btn:hover {
+        transform: translateX(5px);
     }
 </style>
 
