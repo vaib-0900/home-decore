@@ -4,23 +4,49 @@ include "db_connection.php";
 
 // Handle cart updates
 if (isset($_POST['update_cart'])) {
-  $customer_id = $_SESSION['customer_id'];
-  foreach ($_POST['quantity'] as $cart_id => $qty) {
-    $cart_id = mysqli_real_escape_string($conn, $cart_id);
-    $qty = intval($qty);
-    if ($qty > 0) {
-      $update_query = "UPDATE tbl_cart SET cart_qty = $qty 
+    $customer_id = $_SESSION['customer_id'];
+    foreach ($_POST['quantity'] as $cart_id => $qty) {
+        $cart_id = mysqli_real_escape_string($conn, $cart_id);
+        $qty = intval($qty);
+        if ($qty > 0) {
+            $update_query = "UPDATE tbl_cart SET cart_qty = $qty 
                             WHERE cart_id = $cart_id AND cart_customer_id = '$customer_id'";
-      mysqli_query($conn, $update_query);
-    } else {
-      // Remove item if quantity is 0
-      $delete_query = "DELETE FROM tbl_cart   
+            mysqli_query($conn, $update_query);
+        } else {
+            // Remove item if quantity is 0
+            $delete_query = "DELETE FROM tbl_cart   
                            WHERE cart_id = $cart_id AND cart_customer_id = '$customer_id'";
-      mysqli_query($conn, $delete_query);
+            mysqli_query($conn, $delete_query);
+        }
     }
-  }
-  header("Location: cart_list.php?updated=true");
-  exit();
+    header("Location: cart_list.php?updated=true");
+    exit();
+}
+
+// Handle individual quantity updates (plus/minus)
+if (isset($_POST['update_qty'])) {
+    $customer_id = $_SESSION['customer_id'];
+    $cart_id = mysqli_real_escape_string($conn, $_POST['cart_id']);
+    $action = $_POST['action'];
+    
+    // Get current quantity
+    $current_qty_query = "SELECT cart_qty FROM tbl_cart 
+                         WHERE cart_id = $cart_id AND cart_customer_id = '$customer_id'";
+    $current_qty_result = mysqli_query($conn, $current_qty_query);
+    $current_qty = mysqli_fetch_assoc($current_qty_result)['cart_qty'];
+    
+    // Calculate new quantity
+    $new_qty = $current_qty;
+    if ($action == 'increase') {
+        $new_qty = $current_qty + 1;
+    } elseif ($action == 'decrease' && $current_qty > 1) {
+        $new_qty = $current_qty - 1;
+    }
+    
+    // Update quantity
+    $update_query = "UPDATE tbl_cart SET cart_qty = $new_qty 
+                    WHERE cart_id = $cart_id AND cart_customer_id = '$customer_id'";
+    mysqli_query($conn, $update_query);
 }
 
 // Get cart items
@@ -31,22 +57,23 @@ $query = "SELECT * FROM tbl_cart
 $result = mysqli_query($conn, $query);
 $total = 0;
 ?>
- <!-- breadcrumb start-->
-    <section class="breadcrumb breadcrumb_bg">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="breadcrumb_iner">
-                        <div class="breadcrumb_iner_item">
-                            <h2>Cart List</h2>
-                            <p>Home <span>-</span>Cart List</p>
-                        </div>
+<!-- breadcrumb start-->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h2>Cart List</h2>
+                        <p>Home <span>-</span>Cart List</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- breadcrumb start-->
+    </div>
+</section>
+<!-- breadcrumb start-->
+
 <div class="container py-5 mt-3">
   <div class="row">
     <div class="col-lg-8">
@@ -110,15 +137,16 @@ $total = 0;
                           <span class="fw-bold text-primary">Rs.<?php echo number_format($row['product_price'], 2); ?></span>
                         </td>
                         <td>
-                          <form action="qty_add.php" method="post" class="d-inline">
-                            <input type="hidden" name="cart_id" value="<?= $row['cart_id'] ?>"> 
+                          <form method="post" action="cart_list.php" class="d-inline">
+                            <input type="hidden" name="cart_id" value="<?= $row['cart_id'] ?>">
+                            <input type="hidden" name="update_qty" value="1">
                             <div class="input-group quantity" style="width: 120px;">
-                              <button name="minus_category" type="submit" class="btn btn-sm btn-outline-secondary">
+                              <button type="submit" name="action" value="decrease" class="btn btn-sm btn-outline-secondary <?= ($row['cart_qty'] <= 1) ? 'disabled' : '' ?>">
                                 <i class="fas fa-minus"></i>
                               </button>
                               <input type="text" readonly class="form-control form-control-sm text-center border-secondary" 
-                                     name="cart_qty" value="<?= $row["cart_qty"] ?>">
-                              <button name="add_category" type="submit" class="btn btn-sm btn-outline-secondary">
+                                     value="<?= $row['cart_qty'] ?>">
+                              <button type="submit" name="action" value="increase" class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-plus"></i>
                               </button>
                             </div>
@@ -158,10 +186,10 @@ $total = 0;
             <?php if (mysqli_num_rows($result) > 0): ?>
             <div class="card-footer bg-white border-0 py-3">
               <div class="d-flex justify-content-between">
-              <div></div>
-              <a href="shop.php" class="btn btn-outline-primary rounded-pill px-4 ms-auto">
-                <i class="fas fa-arrow-left me-2"></i>Continue Shopping
-              </a>
+                <div></div>
+                <a href="shop.php" class="btn btn-outline-primary rounded-pill px-4 ms-auto">
+                  <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                </a>
               </div>
             </div>
             <?php endif; ?>
@@ -197,7 +225,6 @@ $total = 0;
             <a href="checkout.php" class="btn btn-success w-100 rounded-pill py-2">
               <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
             </a>
-           
           <?php endif; ?>
         </div>
       </div>
