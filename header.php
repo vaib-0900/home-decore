@@ -1,8 +1,32 @@
 <?php
- session_start();
- if(!isset($_SESSION["login"])){
+session_start();
+if(!isset($_SESSION["login"])){
     echo "<script>window.location.href='login.php';</script>";
- }
+}
+
+// Get cart count
+$cart_count = 0;
+if(isset($_SESSION['customer_id'])) {
+    include "db_connection.php";
+    $customer_id = $_SESSION['customer_id'];
+    $cart_query = "SELECT COUNT(*) as count FROM tbl_cart WHERE cart_customer_id = '$customer_id'";
+    $cart_result = mysqli_query($conn, $cart_query);
+    $cart_data = mysqli_fetch_assoc($cart_result);
+    $cart_count = $cart_data['count'];
+    mysqli_close($conn);
+}
+
+// Get wishlist count
+$wishlist_count = 0;
+if(isset($_SESSION['customer_id'])) {
+    include "db_connection.php";
+    $customer_id = $_SESSION['customer_id'];
+    $wishlist_query = "SELECT COUNT(*) as count FROM tbl_wishlist WHERE wishlist_customer = '$customer_id'";
+    $wishlist_result = mysqli_query($conn, $wishlist_query);
+    $wishlist_data = mysqli_fetch_assoc($wishlist_result);
+    $wishlist_count = $wishlist_data['count'];
+    mysqli_close($conn);
+}
 ?>
 <!doctype html>
 <html lang="zxx">
@@ -30,6 +54,26 @@
     <link rel="stylesheet" href="css/slick.css">
     <!-- style CSS -->
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .cart-count, .wishlist-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff3368;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+    </style>
 </head>
 
 <body>
@@ -59,8 +103,6 @@
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_1">
                                         <a class="dropdown-item" href="shop.php"> shop </a>
                                         <a class="dropdown-item" href="category.php">category </a>
-                                    
-                                        
                                     </div>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -74,31 +116,37 @@
                                         <a class="dropdown-item" href="checkout.php">product checkout</a>
                                         <a class="dropdown-item" href="cart_list.php">shopping cart</a>
                                         <a class="dropdown-item" href="confirmation.php">confirmation</a>
-                
                                     </div>
                                 </li>
-                              . 
                                 <li class="nav-item">
                                     <a class="nav-link" href="contact.php">Contact</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="register.php">Register</a>
                                 </li>
-                                <li  class="nav-item">
+                                <li class="nav-item">
                                     <a class="nav-link" href="login_out.php">Logout</a>
-
                                 </li>
                             </ul>
                         </div>
                         <div class="hearer_icon d-flex">
                             <a id="search_1" href="javascript:void(0)"><i class="ti-search"></i></a>
-                            <a href="wishlist.php"><i class="ti-heart"></i></a>
-                            <a href="cart_list.php"><i class="ti-shopping-cart"></i></a>
+                            <div class="icon-wrapper mx-2">
+                                <a href="wishlist.php"><i class="ti-heart"></i></a>
+                                <?php if($wishlist_count > 0): ?>
+                                    <span class="wishlist-count"><?php echo $wishlist_count; ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="icon-wrapper">
+                                <a href="cart_list.php"><i class="ti-shopping-cart"></i></a>
+                                <?php if($cart_count > 0): ?>
+                                    <span class="cart-count"><?php echo $cart_count; ?></span>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </nav>
                 </div>
             </div>
         </div>
-       
     </header>
     <!-- Header part end-->
