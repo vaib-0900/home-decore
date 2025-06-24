@@ -87,14 +87,14 @@ $result = mysqli_query($conn, $query);
                                                     <form action="addtocart.php" method="get" class="me-2">
                                                         <input type="hidden" name="id" value="<?php echo $row['product_id']; ?>">
                                                         <button type="submit" class="btn btn-primary btn-sm me-2"
-                                                                data-bs-toggle="tooltip" title="Add to Cart">
+                                                                data-bs-toggle="tooltip" title="Add to Cart" style="margin-right: 8px;">
                                                             <i class="fas fa-shopping-cart"></i>
                                                         </button>
                                                     </form>  
                                                     <form action="remove_wishlist.php" method="post">
                                                         <input type="hidden" name="wishlist_id" value="<?php echo $row['wishlist_id']; ?>">
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle" 
-                                                                data-bs-toggle="tooltip" title="Remove item">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle"
+                                                                data-bs-toggle="tooltip" title="Remove item" style="margin-left: 8px;">
                                                             <i class="fas fa-trash-alt"></i>
                                                         </button>
                                                     </form>
