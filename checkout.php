@@ -81,8 +81,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
-<div class="container py-5 mt-5">
+<!-- breadcrumb start -->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h1 class="mb-3">Checkout</h1>
+                        <p class="mb-0">Complete your order by filling in the details below.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb end -->
+<div class="container py-5 mt-2">
     <div class="row mt-5">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-4">

@@ -318,7 +318,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="col-lg-10">
           <div class="tracking-card mb-5">
             <div class="card-body p-4">
-              <h3 class="mb-4"><i class="fas fa-truck me-2"></i> Track Your Order</h3>
+                <h3 class="mb-4">
+                <i class="fas fa-truck me-2" style="color: #4361ee;"></i> Track Your Order
+                </h3>
               <p class="text-muted mb-4">Enter your Order ID and billing email address to view your order status and tracking information.</p>
               
               <form class="row g-3 tracking_form" method="post">
