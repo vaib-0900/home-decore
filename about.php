@@ -105,13 +105,13 @@ include 'header.php';
          <div class="col-md-6">
           <div class="card border-0 shadow-sm h-100 overflow-hidden">
     <!-- Image container with fixed aspect ratio -->
-    <div class="team-img-container" style="height: 300px; overflow: hidden;">
+    <div class="team-img-container" style="height: 370px; overflow: hidden;">
         <img src="img/sam1.jpg" class="w-100 h-100 object-fit-cover" alt="Samarth Yadav - Founder of Nestify Home">
     </div>
     <div class="card-body text-center p-4">
         <h5 class="fw-bold mb-1">Samarth Yadav</h5>
         <p class="text-muted mb-3">Founder</p>
-        <p class="mb-4">With 15 years in interior design, Samarth's vision shapes our product lines.</p>
+        <p class="mb-2">With 5 years in interior design, Samarth's vision shapes our product.</p>
         <div class="d-flex justify-content-center">
             <a href="#" class="text-decoration-none mx-2" aria-label="LinkedIn profile">
                 <i class="fab fa-linkedin fa-lg text-primary"></i>
@@ -126,17 +126,21 @@ include 'header.php';
          <div class="col-md-6">
           <div class="card border-0 shadow-sm h-100 overflow-hidden">
             <!-- Image container with fixed aspect ratio -->
-            <div class="team-img-container" style="height: 300px; overflow: hidden;">
+            <div class="team-img-container" style="height: 370px; overflow: hidden;">
                 <img src="img/vaib.JPG" class="w-100 h-100 object-fit-cover" alt="Vaibhav Shinde - CEO & Head of Design">
             </div>
             <div class="card-body text-center p-4">
                <h5 class="fw-bold mb-1">Vaibhav Shinde</h5>
                <p class="text-muted mb-3">CEO & Head of Design</p>
-               <p>Vaibhav's innovative designs have won multiple national awards.</p>
-               <div class="d-flex justify-content-center">
-                <a href="#" class="text-decoration-none mx-2" aria-label="LinkedIn profile"><i class="fab fa-linkedin text-primary"></i></a>
-                <a href="#" class="text-decoration-none mx-2" aria-label="Instagram profile"><i class="fab fa-instagram text-primary"></i></a>
-               </div>
+               <p class="mb-2">Vaibhav's innovative designs have won multiple national awards.</p>
+              <div class="d-flex justify-content-center">
+            <a href="#" class="text-decoration-none mx-2" aria-label="LinkedIn profile">
+                <i class="fab fa-linkedin fa-lg text-primary"></i>
+            </a>
+            <a href="#" class="text-decoration-none mx-2" aria-label="Twitter profile">
+                <i class="fab fa-twitter fa-lg text-primary"></i>
+            </a>
+        </div>
             </div>
           </div>
          </div>
