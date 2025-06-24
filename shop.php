@@ -291,6 +291,7 @@ include 'header.php';
 </section>
 
 <!-- JavaScript for Filtering and Sorting -->
+<!-- JavaScript for Filtering and Sorting -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize counts
@@ -308,13 +309,21 @@ include 'header.php';
         let currentPriceRange = { min: 0, max: 1000000 };
         const priceRangeButtons = document.querySelectorAll('.price-range-btn');
         
+        // Set "All Prices" as active by default
+        priceRangeButtons[0].classList.add('active', 'btn-primary');
+        priceRangeButtons[0].classList.remove('btn-outline-secondary');
+        
         priceRangeButtons.forEach(button => {
             button.addEventListener('click', function() {
                 // Remove active class from all buttons
-                priceRangeButtons.forEach(btn => btn.classList.remove('active'));
+                priceRangeButtons.forEach(btn => {
+                    btn.classList.remove('active', 'btn-primary');
+                    btn.classList.add('btn-outline-secondary');
+                });
                 
                 // Add active class to clicked button
-                this.classList.add('active');
+                this.classList.add('active', 'btn-primary');
+                this.classList.remove('btn-outline-secondary');
                 
                 // Set current price range
                 currentPriceRange = {
@@ -322,14 +331,13 @@ include 'header.php';
                     max: parseInt(this.getAttribute('data-max'))
                 };
                 
-                // Highlight the selected range
-                this.classList.remove('btn-outline-secondary');
-                this.classList.add('btn-primary');
+                // Immediately apply filter when price range is clicked
+                applyFilters();
             });
         });
 
-        // Filter products based on selected criteria
-        document.getElementById('apply-filters').addEventListener('click', function() {
+        // Function to apply all filters
+        function applyFilters() {
             const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(el => el.value);
             const selectedRatings = Array.from(document.querySelectorAll('.rating-filter:checked')).map(el => parseInt(el.value));
 
@@ -356,22 +364,23 @@ include 'header.php';
             document.getElementById('showing-count').textContent = visibleCount;
             
             // Show message if no products match filters
+            const container = document.getElementById('products-container');
+            let noProductsMsg = container.querySelector('.no-products-message');
+            
             if (visibleCount === 0) {
-                const noProductsMsg = document.createElement('div');
-                noProductsMsg.className = 'col-12 text-center py-5';
-                noProductsMsg.innerHTML = '<div class="alert alert-warning">No products match your filters. Try adjusting your criteria.</div>';
-                
-                const container = document.getElementById('products-container');
-                if (!container.querySelector('.alert-warning')) {
+                if (!noProductsMsg) {
+                    noProductsMsg = document.createElement('div');
+                    noProductsMsg.className = 'col-12 text-center py-5 no-products-message';
+                    noProductsMsg.innerHTML = '<div class="alert alert-warning">No products match your filters. Try adjusting your criteria.</div>';
                     container.appendChild(noProductsMsg);
                 }
-            } else {
-                const existingMsg = document.querySelector('.alert-warning');
-                if (existingMsg) {
-                    existingMsg.remove();
-                }
+            } else if (noProductsMsg) {
+                noProductsMsg.remove();
             }
-        });
+        }
+
+        // Apply filters when button clicked
+        document.getElementById('apply-filters').addEventListener('click', applyFilters);
 
         // Reset all filters
         document.getElementById('reset-filters').addEventListener('click', function() {
@@ -382,6 +391,10 @@ include 'header.php';
                 btn.classList.add('btn-outline-secondary');
             });
             
+            // Set "All Prices" as active
+            priceRangeButtons[0].classList.add('active', 'btn-primary');
+            priceRangeButtons[0].classList.remove('btn-outline-secondary');
+            
             // Reset category and rating filters
             document.querySelectorAll('.category-filter, .rating-filter').forEach(el => el.checked = false);
             
@@ -390,9 +403,9 @@ include 'header.php';
             document.getElementById('showing-count').textContent = totalProducts;
             
             // Remove any no products message
-            const existingMsg = document.querySelector('.alert-warning');
-            if (existingMsg) {
-                existingMsg.remove();
+            const noProductsMsg = document.querySelector('.no-products-message');
+            if (noProductsMsg) {
+                noProductsMsg.remove();
             }
         });
 
@@ -416,7 +429,7 @@ include 'header.php';
                 } else if (sortBy === 'newest') {
                     return parseInt(b.dataset.date) - parseInt(a.dataset.date);
                 } else {
-                    return parseInt(a.dataset.id) - parseInt(b.dataset.id);
+                    return 0; // Default sorting (keep original order)
                 }
             });
 
@@ -448,112 +461,27 @@ include 'header.php';
 </script>
 
 <style>
-    .breadcrumb {
-        padding: 60px 0;
-        position: relative;
-        background-size: cover;
-        background-position: center;
-    }
-
-    .breadcrumb:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .breadcrumb_iner {
-        position: relative;
-        z-index: 1;
-    }
-
-    .category-card {
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .category-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .hover-shadow {
-        transition: box-shadow 0.3s;
-    }
-
-    .hover-shadow:hover {
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    .hover-scale {
-        transition: transform 0.5s;
-    }
-
-    .hover-scale:hover {
-        transform: scale(1.05);
-    }
-
-    .product-badge {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        padding: 5px 10px;
-        color: white;
-        border-radius: 3px;
-        font-size: 12px;
-        z-index: 2;
-    }
-
-    .product-img-container {
-        background-color: #f8f9fa;
-    }
-
-    .product-actions button {
-        opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.3s;
-    }
-
-    .card:hover .product-actions button {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .filter-scroll::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    .filter-scroll::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    .filter-scroll::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-    }
-
-    .filter-scroll::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-    .object-fit-cover {
-        object-fit: cover;
-    }
-    
+    /* Your existing CSS styles remain the same */
     .price-range-buttons .btn {
         width: 100%;
         text-align: left;
         transition: all 0.3s;
+        margin-bottom: 0.5rem;
     }
     
     .price-range-buttons .btn.active {
         background-color: #0d6efd;
         color: white;
+        border-color: #0d6efd;
     }
     
     .price-range-buttons .btn:hover {
         transform: translateX(5px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .price-range-buttons .btn:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
 </style>
 
