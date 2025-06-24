@@ -69,6 +69,27 @@ $stats = mysqli_fetch_assoc($stats_result);
     </style>
 </head>
 <body>
+    <!-- breadcrumb start -->
+<section class="breadcrumb breadcrumb_bg">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="breadcrumb_iner">
+                    <div class="breadcrumb_iner_item">
+                        <h1 class="mb-3">Order Confirmation</h1>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                            <li class="breadcrumb-item"><a href="cart.php">Cart</a></li>
+                            <li class="breadcrumb-item"><a href="checkout.php">Checkout</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Confirmation</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb end -->
 <div class="container py-4 mt-5">
     <div class="row mb-4 mt-5">
         <div class="col-12 mt-5">
