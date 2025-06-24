@@ -105,8 +105,8 @@ include 'header.php';
          <div class="col-md-6">
           <div class="card border-0 shadow-sm h-100 overflow-hidden">
     <!-- Image container with fixed aspect ratio -->
-    <div class="team-img-container" style="height: 250px; overflow: hidden;">
-        <img src="img/sam2.jpg" class="w-100 h-100 object-fit-cover" alt="Samarth Yadav - Founder of Nestify Home">
+    <div class="team-img-container" style="height: 300px; overflow: hidden;">
+        <img src="img/sam1.jpg" class="w-100 h-100 object-fit-cover" alt="Samarth Yadav - Founder of Nestify Home">
     </div>
     <div class="card-body text-center p-4">
         <h5 class="fw-bold mb-1">Samarth Yadav</h5>
