@@ -82,8 +82,8 @@ $result = mysqli_query($conn, $query);
                                                 <span class="fw-bold text-primary">Rs.<?php echo number_format($row['product_price'], 2); ?></span>
                                             </td>
                                            
-                                            <td class="pe-4">
-                                                <div class="d-flex">
+                                            <td class="pe-4 ">
+                                                <div class="d-flex py-3">
                                                     <form action="addtocart.php" method="get" class="me-2">
                                                         <input type="hidden" name="id" value="<?php echo $row['product_id']; ?>">
                                                         <button type="submit" class="btn btn-primary btn-sm me-2"
