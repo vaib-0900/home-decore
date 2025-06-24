@@ -91,7 +91,7 @@ $result = mysqli_query($conn, $query);
                                                             <i class="fas fa-shopping-cart"></i>
                                                         </button>
                                                     </form>  
-                                                    <form action="remove_from_wishlist.php" method="post">
+                                                    <form action="remove_wishlist.php" method="post">
                                                         <input type="hidden" name="wishlist_id" value="<?php echo $row['wishlist_id']; ?>">
                                                         <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle" 
                                                                 data-bs-toggle="tooltip" title="Remove item">
@@ -122,10 +122,8 @@ $result = mysqli_query($conn, $query);
                     <?php if (mysqli_num_rows($result) > 0): ?>
                     <div class="card-footer bg-white border-0 py-3">
                         <div class="d-flex justify-content-between">
-                            <form action="clear_wishlist.php" method="post">
-                                <button type="submit" class="btn btn-outline-danger rounded-pill px-4">
-                                    <i class="fas fa-trash me-2"></i>Clear Wishlist
-                                </button>
+                            <form action="" method="">
+                           
                             </form>
                             <a href="shop.php" class="btn btn-primary rounded-pill px-4">
                                 <i class="fas fa-store me-2"></i>Continue Shopping
