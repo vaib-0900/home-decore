@@ -112,7 +112,7 @@ include 'header.php';
                             </div>
                         </div>
 
-                        <!-- Rating Filter -->
+                        <!-- Rating Filter
                         <div class="mb-3">
                             <h6 class="mb-3 d-flex align-items-center">
                                 <i class="fas fa-star me-2 text-muted"></i> Rating
@@ -140,7 +140,7 @@ include 'header.php';
                                     <span class="ms-1">& Up</span>
                                 </label>
                             </div>
-                        </div>
+                        </div> -->
 
                         <button class="btn btn-primary w-100 mt-3" id="apply-filters">
                             <i class="fas fa-check-circle me-2"></i> Apply Filters
@@ -159,7 +159,7 @@ include 'header.php';
                     <div class="text-muted">
                         <span id="showing-count"><?= $total_products ?></span> of <span id="total-count"><?= $total_products ?></span> products
                     </div>
-                    <div class="sort-options">
+                    <!--<div class="sort-options">
                         <select class="form-select form-select-sm" id="sort-products">
                             <option value="default">Default Sorting</option>
                             <option value="price-low">Price: Low to High</option>
@@ -167,7 +167,7 @@ include 'header.php';
                             <option value="rating">Highest Rating</option>
                             <option value="newest">Newest Arrivals</option>
                         </select>
-                    </div>
+                    </div>-->
                 </div>
 
                 <!-- Products Grid -->
