@@ -109,6 +109,7 @@ $total = 0;
                     <th width="15%">Price</th>
                     <th width="15%">Quantity</th>
                     <th width="15%">Subtotal</th>
+                    <th width="10%">Status</th>
                     <th width="15%" class="pe-4">Action</th>
                   </tr>
                 </thead>
@@ -154,6 +155,13 @@ $total = 0;
                         </td>
                         <td class="subtotal fw-bold" data-id="<?php echo $row['cart_id']; ?>">
                           Rs.<?php echo number_format($subtotal, 2); ?>
+                        </td>
+                        <td>
+                          <?php if ($row['cart_status'] == 'active'): ?>
+                            <span class="badge bg-success">Active</span>
+                          <?php else: ?>
+                            <span class="badge bg-secondary">Inactive</span>
+                          <?php endif; ?>
                         </td>
                         <td class="pe-4">
                           <form action="remove_cart.php" method="post" class="d-inline">

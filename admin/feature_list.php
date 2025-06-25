@@ -107,9 +107,15 @@ include "sidebar.php";
                                     <tbody>
                                         <?php
                                         $count = 0;
-                                        $query = "SELECT * FROM tbl_feature INNER JOIN tbl_product ON tbl_product.product_id = tbl_feature.product_id";
+                                        $query = "SELECT * FROM tbl_feature 
+                                                  INNER JOIN tbl_product ON tbl_product.product_id = tbl_feature.product_id";
+                                        // Execute the query
+                                        $conn = new mysqli("localhost", "root", "", "admin_home");
+                                        if ($conn->connect_error) {
+                                            die("Connection failed: " . $conn->connect_error);
+                                        }
                                         $result = mysqli_query($conn, $query);
-                                        
+
                                         if (mysqli_num_rows($result) > 0) {
                                             while ($row = mysqli_fetch_array($result)) {
                                         ?>
