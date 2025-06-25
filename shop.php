@@ -1,5 +1,89 @@
 <?php
 include 'header.php';
+include 'db_connection.php'; // Make sure this includes the recommendation functions
+
+// Recommendation system functions
+function getRecommendedProducts($customer_id = null, $limit = 4) {
+    global $conn;
+    
+    $recommended = array();
+    
+    if ($customer_id) {
+        // Collaborative filtering approach
+        // Step 1: Find users with similar purchase history
+        $similar_users_query = "SELECT DISTINCT customer_id FROM orders WHERE product_id IN 
+                              (SELECT product_id FROM orders WHERE customer_id = $customer_id) 
+                              AND customer_id != $customer_id LIMIT 5";
+        
+        $similar_users = $conn->query($similar_users_query);
+        
+        if ($similar_users->num_rows > 0) {
+            $product_ids = array();
+            while ($user = $similar_users->fetch_assoc()) {
+                $products_query = "SELECT product_id FROM orders WHERE customer_id = {$user['customer_id']} 
+                                 AND product_id NOT IN 
+                                 (SELECT product_id FROM orders WHERE customer_id = $customer_id)";
+                $products = $conn->query($products_query);
+                
+                while ($product = $products->fetch_assoc()) {
+                    $product_ids[] = $product['product_id'];
+                }
+            }
+            
+            // Count occurrences and get most frequently purchased products
+            if (!empty($product_ids)) {
+                $counts = array_count_values($product_ids);
+                arsort($counts);
+                $top_products = array_slice(array_keys($counts), 0, $limit);
+                
+                if (!empty($top_products)) {
+                    $ids = implode(",", $top_products);
+                    $recommended_query = "SELECT * FROM tbl_product WHERE product_id IN ($ids)";
+                    $recommended = $conn->query($recommended_query)->fetch_all(MYSQLI_ASSOC);
+                }
+            }
+        }
+    }
+    
+    // Fallback to popular products if no recommendations found
+    if (empty($recommended)) {
+        $popular_query = "SELECT p.*, COUNT(p.product_id) as purchase_count 
+                         FROM tbl_product p
+                         LEFT JOIN orders o ON p.product_id = p.product_id
+                         GROUP BY p.product_id
+                         ORDER BY purchase_count DESC, p.product_id DESC
+                         LIMIT $limit";
+        $recommended = $conn->query($popular_query)->fetch_all(MYSQLI_ASSOC);
+    }
+    
+    return $recommended;
+}
+
+function getSimilarProducts($product_id, $limit = 4) {
+    global $conn;
+    
+    // Get current product's category
+    $product_query = "SELECT add_category FROM tbl_product WHERE product_id = $product_id";
+    $product_result = $conn->query($product_query);
+    
+    if ($product_result->num_rows > 0) {
+        $product = $product_result->fetch_assoc();
+        $category_id = $product['add_category'];
+        
+        // Get products from same category (excluding current product)
+        $similar_query = "SELECT p.*, COUNT(p.product_id) as purchase_count 
+                         FROM tbl_product p
+                         LEFT JOIN orders o ON p.product_id = p.product_id
+                         WHERE p.add_category = $category_id AND p.product_id != $product_id
+                         GROUP BY p.product_id
+                         ORDER BY purchase_count DESC, p.product_id DESC
+                         LIMIT $limit";
+        
+        return $conn->query($similar_query)->fetch_all(MYSQLI_ASSOC);
+    }
+    
+    return array();
+}
 ?>
 <!--================Home Banner Area =================-->
 <section class="breadcrumb breadcrumb_bg">
@@ -19,7 +103,6 @@ include 'header.php';
 <!-- ================ category section start ================= -->
 <section class="mt-5 mb-5" id="categories">
     <?php
-    include "db_connection.php";
     // Fetch all categories from the database
     $query = "SELECT * FROM tbl_category";
     $result = $conn->query($query);
@@ -80,7 +163,7 @@ include 'header.php';
                                 <i class="fas fa-tag me-2 text-muted"></i> Price Range
                             </h6>
                             <div class="price-range-buttons">
-                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="0" data-max="1000000">All Prices</button>
+                                <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn active" data-min="0" data-max="1000000">All Prices</button>
                                 <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="1000" data-max="3000">Rs. 1,000 - 3,000</button>
                                 <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="3000" data-max="6000">Rs. 3,000 - 6,000</button>
                                 <button class="btn btn-sm btn-outline-secondary mb-2 price-range-btn" data-min="6000" data-max="10000">Rs. 6,000 - 10,000</button>
@@ -112,36 +195,6 @@ include 'header.php';
                             </div>
                         </div>
 
-                        <!-- Rating Filter
-                        <div class="mb-3">
-                            <h6 class="mb-3 d-flex align-items-center">
-                                <i class="fas fa-star me-2 text-muted"></i> Rating
-                            </h6>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input rating-filter" type="checkbox" value="5" id="rating-5">
-                                <label class="form-check-label" for="rating-5">
-                                    <?php for ($i = 0; $i < 5; $i++) echo '<i class="fas fa-star text-warning"></i>'; ?>
-                                    <span class="ms-1">& Up</span>
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input rating-filter" type="checkbox" value="4" id="rating-4">
-                                <label class="form-check-label" for="rating-4">
-                                    <?php for ($i = 0; $i < 4; $i++) echo '<i class="fas fa-star text-warning"></i>'; ?>
-                                    <i class="far fa-star text-warning"></i>
-                                    <span class="ms-1">& Up</span>
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input rating-filter" type="checkbox" value="3" id="rating-3">
-                                <label class="form-check-label" for="rating-3">
-                                    <?php for ($i = 0; $i < 3; $i++) echo '<i class="fas fa-star text-warning"></i>'; ?>
-                                    <?php for ($i = 0; $i < 2; $i++) echo '<i class="far fa-star text-warning"></i>'; ?>
-                                    <span class="ms-1">& Up</span>
-                                </label>
-                            </div>
-                        </div> -->
-
                         <button class="btn btn-primary w-100 mt-3" id="apply-filters">
                             <i class="fas fa-check-circle me-2"></i> Apply Filters
                         </button>
@@ -155,20 +208,7 @@ include 'header.php';
             <!-- Product Listing -->
             <div class="col-lg-9 col-md-8">
                 <!-- Sorting Options -->
-                <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-3 shadow-sm">
-                    <div class="text-muted">
-                        <span id="showing-count"><?= $total_products ?></span> of <span id="total-count"><?= $total_products ?></span> products
-                    </div>
-                    <!--<div class="sort-options">
-                        <select class="form-select form-select-sm" id="sort-products">
-                            <option value="default">Default Sorting</option>
-                            <option value="price-low">Price: Low to High</option>
-                            <option value="price-high">Price: High to Low</option>
-                            <option value="rating">Highest Rating</option>
-                            <option value="newest">Newest Arrivals</option>
-                        </select>
-                    </div>-->
-                </div>
+                <
 
                 <!-- Products Grid -->
                 <div class="row g-4" id="products-container">
@@ -182,9 +222,7 @@ include 'header.php';
 
                     if ($total_products > 0) {
                         while ($row = $result->fetch_assoc()) {
-                            // Calculate random rating for demo (replace with actual rating from DB if available)
                             $rating = rand(3, 5);
-                            // Calculate discount if original price exists
                             $discount = '';
                             if (isset($row['original_price']) && $row['original_price'] > $row['product_price']) {
                                 $discount_percent = round(($row['original_price'] - $row['product_price']) / $row['original_price'] * 100);
@@ -197,10 +235,8 @@ include 'header.php';
                                 data-rating="<?= $rating ?>"
                                 data-date="<?= strtotime($row['created_at'] ?? date('Y-m-d')) ?>">
                                 <div class="card h-100 border-0 rounded-3 shadow-sm overflow-hidden transition-all hover-shadow">
-                                    <!-- Product Badge -->
                                     <?= $discount ?>
 
-                                    <!-- Product Image -->
                                     <div class="product-img-container position-relative overflow-hidden" style="height: 250px;">
                                         <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
                                             <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_image']) ?>">
@@ -212,7 +248,6 @@ include 'header.php';
                                         </a>
                                     </div>
 
-                                    <!-- Product Body -->
                                     <div class="card-body p-3">
                                         <div class="d-flex justify-content-between align-items-start mb-2">
                                             <span class="badge bg-light text-dark"><?= $row['category_name'] ?></span>
@@ -233,7 +268,6 @@ include 'header.php';
                                             <?= substr(htmlspecialchars($row['product_description']), 0, 80) ?>...
                                         </p>
 
-                                        <!-- Price -->
                                         <div class="d-flex justify-content-between align-items-center mt-3">
                                             <div>
                                                 <h5 class="text-primary mb-0">
@@ -263,7 +297,6 @@ include 'header.php';
                                 <div class="alert alert-info">No products found. Please check back later.</div>
                               </div>';
                     }
-                    $conn->close();
                     ?>
                 </div>
 
@@ -290,7 +323,69 @@ include 'header.php';
     </div>
 </section>
 
-<!-- JavaScript for Filtering and Sorting -->
+<!-- ================ Recommended Products Section ================= -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="section-title text-center mb-5">
+            <h3 class="position-relative d-inline-block">Recommended For You</h3>
+        </div>
+        
+        <div class="row g-4">
+            <?php
+            $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+            $recommended_products = getRecommendedProducts($user_id, 4);
+            
+            if (!empty($recommended_products)) {
+                foreach ($recommended_products as $row) {
+                    $rating = rand(3, 5);
+                    $discount = '';
+                    if (isset($row['original_price']) && $row['original_price'] > $row['product_price']) {
+                        $discount_percent = round(($row['original_price'] - $row['product_price']) / $row['original_price'] * 100);
+                        $discount = '<span class="product-badge bg-danger">-' . $discount_percent . '%</span>';
+                    }
+            ?>
+            <div class="col-xl-3 col-lg-4 col-md-6">
+                <div class="card h-100 border-0 rounded-3 shadow-sm overflow-hidden transition-all hover-shadow">
+                    <?= $discount ?>
+                    
+                    <div class="product-img-container position-relative overflow-hidden" style="height: 200px;">
+                        <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                            <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_name']) ?>">
+                        </a>
+                    </div>
+                    
+                    <div class="card-body p-3">
+                        <div class="rating small mb-2">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <?= $i <= $rating ? '<i class="fas fa-star text-warning"></i>' : '<i class="far fa-star text-warning"></i>' ?>
+                            <?php endfor; ?>
+                        </div>
+                        
+                        <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                            <h5 class="card-title mb-2 text-dark hover-text-primary"><?= htmlspecialchars($row['product_name']) ?></h5>
+                        </a>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <h5 class="text-primary mb-0">
+                                Rs. <?= number_format($row['product_price'], 2) ?>
+                            </h5>
+                            <a href="addtocart.php?id=<?= $row['product_id'] ?>" class="btn btn-primary btn-sm rounded-pill px-3">
+                                <i class="fas fa-cart-plus me-1"></i> Add
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+                }
+            } else {
+                echo '<div class="col-12 text-center"><p>No recommendations available at the moment.</p></div>';
+            }
+            ?>
+        </div>
+    </div>
+</section>
+
 <!-- JavaScript for Filtering and Sorting -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -308,10 +403,6 @@ include 'header.php';
         // Price range buttons functionality
         let currentPriceRange = { min: 0, max: 1000000 };
         const priceRangeButtons = document.querySelectorAll('.price-range-btn');
-        
-        // Set "All Prices" as active by default
-        priceRangeButtons[0].classList.add('active', 'btn-primary');
-        priceRangeButtons[0].classList.remove('btn-outline-secondary');
         
         priceRangeButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -461,7 +552,6 @@ include 'header.php';
 </script>
 
 <style>
-    /* Your existing CSS styles remain the same */
     .price-range-buttons .btn {
         width: 100%;
         text-align: left;
@@ -482,6 +572,50 @@ include 'header.php';
     
     .price-range-buttons .btn:focus {
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 5px 10px;
+        border-radius: 3px;
+        color: white;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .product-img-container img {
+        transition: transform 0.3s ease;
+    }
+    
+    .product-img-container:hover img {
+        transform: scale(1.05);
+    }
+    
+    .hover-shadow {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .hover-shadow:hover {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .filter-scroll::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    .filter-scroll::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    
+    .filter-scroll::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+    
+    .filter-scroll::-webkit-scrollbar-thumb:hover {
+        background: #555;
     }
 </style>
 
