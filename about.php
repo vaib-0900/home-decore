@@ -30,7 +30,8 @@ include 'header.php';
             <div class="col-lg-6">
                 <h2 class="fw-bold mb-4">Creating Beautiful Homes Since 2010</h2>
                 <p class="lead">At Nestify Home, we believe your home should be a reflection of your personality and a sanctuary for your soul.</p>
-                <p>Founded in Pune by visionary designers, Nestify Home started as a passion project to bring unique, handcrafted decor to every Indian household. Over the years, we've expanded to serve thousands of customers nationwide, blending modern aesthetics with traditional craftsmanship to create spaces you'll love coming home to.</p><div class="d-flex align-items-center mt-4">
+                <p>Founded in Pune by a team of e-commerce enthusiasts, Nestify Home began as an online platform to make quality home decor accessible to everyone. Today, we offer a curated selection of products—from furniture and lighting to wall art and accessories—delivered directly to your doorstep. Our seamless shopping experience, secure payments, and fast shipping have helped us become a trusted name in online home decor across India.</p>
+                <div class="d-flex align-items-center mt-4">
                     <div class="bg-white bg-opacity-10 p-3 rounded-circle me-3">
                         <i class="fas fa-heart text-danger"></i> + <i class="fas fa-home"></i>
                     </div>
