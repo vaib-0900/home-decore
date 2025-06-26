@@ -5,7 +5,15 @@ include "db_connection.php";
 if (isset($_GET['id'])) {
     $product_id = intval($_GET['id']);
 
+    // Fetch product details
     $query = "SELECT * FROM tbl_product WHERE product_id = ?";
+
+    // Example: Update product view count (optional, adjust as needed)
+    $updateQuery = "UPDATE tbl_product SET view_count = view_count + 1 WHERE product_id = ?";
+    $updateStmt = $conn->prepare($updateQuery);
+    $updateStmt->bind_param("i", $product_id);
+    $updateStmt->execute();
+    $updateStmt->close();
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
