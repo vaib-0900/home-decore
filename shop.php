@@ -322,56 +322,69 @@ function getSimilarProducts($product_id, $limit = 4) {
         </div>
     </div>
 </section>
-
-<!-- ================ Recommended Products Section ================= -->
 <section class="py-5 bg-white">
     <div class="container">
         <div class="section-title text-center mb-5">
-            <h3 class="position-relative d-inline-block">Recommended For You</h3>
+            <h3 class="position-relative d-inline-block fw-bold">Recommended For You</h3>
         </div>
         
         <div class="row g-4">
             <?php
-            $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-            $recommended_products = getRecommendedProducts($user_id, 4);
+            $customer_id = isset($_SESSION['customer_id']) ? $_SESSION['customer_id'] : null;
+            $recommend_query = "SELECT * FROM tbl_product ORDER BY view_count DESC LIMIT 4";
+            $recommend_result = mysqli_query($conn, $recommend_query);
             
-            if (!empty($recommended_products)) {
-                foreach ($recommended_products as $row) {
-                    $rating = rand(3, 5);
-                    $discount = '';
-                    if (isset($row['original_price']) && $row['original_price'] > $row['product_price']) {
-                        $discount_percent = round(($row['original_price'] - $row['product_price']) / $row['original_price'] * 100);
-                        $discount = '<span class="product-badge bg-danger">-' . $discount_percent . '%</span>';
+            if (mysqli_num_rows($recommend_result) > 0) {
+                while ($row = mysqli_fetch_array($recommend_result)) {
+                    $discount_percent = 0;
+                    if ($row['product_price'] > $row['sell_price']) {
+                        $discount_percent = round(($row['product_price'] - $row['sell_price']) / $row['product_price'] * 100);
                     }
             ?>
             <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="card h-100 border-0 rounded-3 shadow-sm overflow-hidden transition-all hover-shadow">
-                    <?= $discount ?>
+                    <?php if ($discount_percent > 0): ?>
+                        <span class="product-badge bg-danger">-<?= $discount_percent ?>%</span>
+                    <?php endif; ?>
                     
-                    <div class="product-img-container position-relative overflow-hidden" style="height: 200px;">
-                        <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
-                            <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_name']) ?>">
+                    <div class="product-img-container position-relative overflow-hidden" style="height: 200px; background-color: #f8f9fa;">
+                        <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                            <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" 
+                                 class="img-fluid p-3 h-100 w-100" 
+                                 style="object-fit: contain;"
+                                 alt="<?= htmlspecialchars($row['product_name']) ?>">
                         </a>
                     </div>
                     
-                    <div class="card-body p-3">
+                    <div class="card-body p-3 text-center">
                         <div class="rating small mb-2">
-                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <?php 
+                            $rating = rand(3, 5); // Random rating for demo - replace with actual rating if available
+                            for ($i = 1; $i <= 5; $i++): ?>
                                 <?= $i <= $rating ? '<i class="fas fa-star text-warning"></i>' : '<i class="far fa-star text-warning"></i>' ?>
                             <?php endfor; ?>
                         </div>
                         
-                        <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                        <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none">
                             <h5 class="card-title mb-2 text-dark hover-text-primary"><?= htmlspecialchars($row['product_name']) ?></h5>
                         </a>
                         
                         <div class="d-flex justify-content-between align-items-center mt-3">
-                            <h5 class="text-primary mb-0">
-                                Rs. <?= number_format($row['product_price'], 2) ?>
-                            </h5>
-                            <a href="addtocart.php?id=<?= $row['product_id'] ?>" class="btn btn-primary btn-sm rounded-pill px-3">
-                                <i class="fas fa-cart-plus me-1"></i> Add
-                            </a>
+                            <div>
+                                <h5 class="text-primary mb-0">
+                                    ₹<?= number_format($row['sell_price'], 2) ?>
+                                </h5>
+                                <?php if ($row['product_price'] > $row['sell_price']): ?>
+                                    <small class="text-muted text-decoration-line-through">₹<?= number_format($row['product_price'], 2) ?></small>
+                                <?php endif; ?>
+                            </div>
+                            <form action="addtocart.php" method="post" class="mb-0">
+                                <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
+                                <input type="hidden" name="cart_qty" value="1">
+                                <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    <i class="fas fa-cart-plus me-1"></i> Add
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -385,7 +398,6 @@ function getSimilarProducts($product_id, $limit = 4) {
         </div>
     </div>
 </section>
-
 <!-- JavaScript for Filtering and Sorting -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
