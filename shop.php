@@ -207,8 +207,19 @@ function getSimilarProducts($product_id, $limit = 4) {
 
             <!-- Product Listing -->
             <div class="col-lg-9 col-md-8">
+                
                 <!-- Sorting Options -->
-                <
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="text-muted">
+        Showing <span id="showing-count">0</span> of <span id="total-count">0</span> products
+    </div>
+    <div class="sorting-options">
+        <select id="sort-products" class="form-select form-select-sm">
+            <option value="default">Default Sorting</option>
+        
+        </select>
+    </div>
+</div>
 
                 <!-- Products Grid -->
                 <div class="row g-4" id="products-container">
@@ -343,12 +354,9 @@ function getSimilarProducts($product_id, $limit = 4) {
             ?>
             <div class="col-xl-3 col-lg-4 col-md-6">
                 <div class="card h-100 border-0 rounded-3 shadow-sm overflow-hidden transition-all hover-shadow">
-                    <?php if ($discount_percent > 0): ?>
-                        <span class="product-badge bg-danger">-<?= $discount_percent ?>%</span>
-                    <?php endif; ?>
-                    
+
                     <div class="product-img-container position-relative overflow-hidden" style="height: 200px; background-color: #f8f9fa;">
-                        <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                        <a href="single-product.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none">
                             <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" 
                                  class="img-fluid p-3 h-100 w-100" 
                                  style="object-fit: contain;"
@@ -365,7 +373,7 @@ function getSimilarProducts($product_id, $limit = 4) {
                             <?php endfor; ?>
                         </div>
                         
-                        <a href="single_productview.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                        <a href="single-product.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none">
                             <h5 class="card-title mb-2 text-dark hover-text-primary"><?= htmlspecialchars($row['product_name']) ?></h5>
                         </a>
                         
@@ -378,13 +386,9 @@ function getSimilarProducts($product_id, $limit = 4) {
                                     <small class="text-muted text-decoration-line-through">₹<?= number_format($row['product_price'], 2) ?></small>
                                 <?php endif; ?>
                             </div>
-                            <form action="addtocart.php" method="post" class="mb-0">
-                                <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
-                                <input type="hidden" name="cart_qty" value="1">
-                                <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">
-                                    <i class="fas fa-cart-plus me-1"></i> Add
-                                </button>
-                            </form>
+                            <a href="addtocart.php?id=<?= $row['product_id'] ?>" class="btn btn-sm btn-outline-primary rounded-pill">
+                                <i class="fas fa-cart-plus me-1"></i> Add
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -399,236 +403,233 @@ function getSimilarProducts($product_id, $limit = 4) {
     </div>
 </section>
 <!-- JavaScript for Filtering and Sorting -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize counts
-        const totalProducts = <?= $total_products ?>;
-        document.getElementById('total-count').textContent = totalProducts;
-        document.getElementById('showing-count').textContent = totalProducts;
+<script>document.addEventListener('DOMContentLoaded', function() {
+    // Initialize elements
+    const productCards = document.querySelectorAll('.product-card');
+    const totalProducts = productCards.length;
+    const productsContainer = document.getElementById('products-container');
+    const showingCountElement = document.getElementById('showing-count');
+    const totalCountElement = document.getElementById('total-count');
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    const resetFiltersBtn = document.getElementById('reset-filters');
+    const sortSelect = document.getElementById('sort-products');
+    const priceRangeButtons = document.querySelectorAll('.price-range-btn');
+    const categoryCheckboxes = document.querySelectorAll('.category-filter');
+    
+    // Initialize counts
+    totalCountElement.textContent = totalProducts;
+    updateProductCount(totalProducts);
 
-        // Initialize tooltips
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 
-        // Price range buttons functionality
-        let currentPriceRange = { min: 0, max: 1000000 };
-        const priceRangeButtons = document.querySelectorAll('.price-range-btn');
-        
-        priceRangeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons
-                priceRangeButtons.forEach(btn => {
-                    btn.classList.remove('active', 'btn-primary');
-                    btn.classList.add('btn-outline-secondary');
-                });
-                
-                // Add active class to clicked button
-                this.classList.add('active', 'btn-primary');
-                this.classList.remove('btn-outline-secondary');
-                
-                // Set current price range
-                currentPriceRange = {
-                    min: parseInt(this.getAttribute('data-min')),
-                    max: parseInt(this.getAttribute('data-max'))
-                };
-                
-                // Immediately apply filter when price range is clicked
-                applyFilters();
-            });
-        });
+    // Current filter state
+    let currentFilters = {
+        priceRange: { min: 0, max: 1000000 },
+        categories: [],
+        sortBy: 'default'
+    };
 
-        // Function to apply all filters
-        function applyFilters() {
-            const selectedCategories = Array.from(document.querySelectorAll('.category-filter:checked')).map(el => el.value);
-            const selectedRatings = Array.from(document.querySelectorAll('.rating-filter:checked')).map(el => parseInt(el.value));
-
-            const productCards = document.querySelectorAll('.product-card');
-            let visibleCount = 0;
-
-            productCards.forEach(card => {
-                const price = parseFloat(card.dataset.price);
-                const category = card.dataset.category;
-                const rating = parseInt(card.dataset.rating);
-
-                const priceMatch = price >= currentPriceRange.min && price <= currentPriceRange.max;
-                const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(category);
-                const ratingMatch = selectedRatings.length === 0 || selectedRatings.some(r => rating >= r);
-
-                if (priceMatch && categoryMatch && ratingMatch) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            document.getElementById('showing-count').textContent = visibleCount;
-            
-            // Show message if no products match filters
-            const container = document.getElementById('products-container');
-            let noProductsMsg = container.querySelector('.no-products-message');
-            
-            if (visibleCount === 0) {
-                if (!noProductsMsg) {
-                    noProductsMsg = document.createElement('div');
-                    noProductsMsg.className = 'col-12 text-center py-5 no-products-message';
-                    noProductsMsg.innerHTML = '<div class="alert alert-warning">No products match your filters. Try adjusting your criteria.</div>';
-                    container.appendChild(noProductsMsg);
-                }
-            } else if (noProductsMsg) {
-                noProductsMsg.remove();
-            }
-        }
-
-        // Apply filters when button clicked
-        document.getElementById('apply-filters').addEventListener('click', applyFilters);
-
-        // Reset all filters
-        document.getElementById('reset-filters').addEventListener('click', function() {
-            // Reset price range
-            currentPriceRange = { min: 0, max: 1000000 };
+    // Price range filter
+    priceRangeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Update UI
             priceRangeButtons.forEach(btn => {
                 btn.classList.remove('active', 'btn-primary');
                 btn.classList.add('btn-outline-secondary');
             });
+            this.classList.add('active', 'btn-primary');
+            this.classList.remove('btn-outline-secondary');
             
-            // Set "All Prices" as active
-            priceRangeButtons[0].classList.add('active', 'btn-primary');
-            priceRangeButtons[0].classList.remove('btn-outline-secondary');
+            // Update filter state
+            currentFilters.priceRange = {
+                min: parseInt(this.dataset.min),
+                max: parseInt(this.dataset.max)
+            };
             
-            // Reset category and rating filters
-            document.querySelectorAll('.category-filter, .rating-filter').forEach(el => el.checked = false);
-            
-            // Show all products
-            document.querySelectorAll('.product-card').forEach(card => card.style.display = 'block');
-            document.getElementById('showing-count').textContent = totalProducts;
-            
-            // Remove any no products message
-            const noProductsMsg = document.querySelector('.no-products-message');
-            if (noProductsMsg) {
-                noProductsMsg.remove();
-            }
-        });
-
-        // Sort products
-        document.getElementById('sort-products').addEventListener('change', function() {
-            const container = document.getElementById('products-container');
-            const cards = Array.from(container.querySelectorAll('.product-card'));
-            
-            // Filter out hidden cards
-            const visibleCards = cards.filter(card => card.style.display !== 'none');
-
-            visibleCards.sort((a, b) => {
-                const sortBy = this.value;
-
-                if (sortBy === 'price-low') {
-                    return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
-                } else if (sortBy === 'price-high') {
-                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
-                } else if (sortBy === 'rating') {
-                    return parseInt(b.dataset.rating) - parseInt(a.dataset.rating);
-                } else if (sortBy === 'newest') {
-                    return parseInt(b.dataset.date) - parseInt(a.dataset.date);
-                } else {
-                    return 0; // Default sorting (keep original order)
-                }
-            });
-
-            // Re-append sorted cards
-            visibleCards.forEach(card => container.appendChild(card));
-        });
-
-        // Quick view functionality
-        document.querySelectorAll('.quick-view').forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.getAttribute('data-id');
-                // Here you would typically fetch product details via AJAX and show in a modal
-                alert('Quick view for product ID: ' + productId);
-            });
-        });
-
-        // Add hover effects
-        document.querySelectorAll('.hover-text-primary').forEach(el => {
-            el.addEventListener('mouseover', () => {
-                el.classList.add('text-primary');
-                el.classList.remove('text-dark');
-            });
-            el.addEventListener('mouseout', () => {
-                el.classList.remove('text-primary');
-                el.classList.add('text-dark');
-            });
+            applyFilters();
         });
     });
+
+    // Category filter
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            currentFilters.categories = Array.from(document.querySelectorAll('.category-filter:checked'))
+                .map(el => el.value);
+            applyFilters();
+        });
+    });
+
+    // Sorting
+    sortSelect.addEventListener('change', function() {
+        currentFilters.sortBy = this.value;
+        applyFilters();
+    });
+
+    // Apply filters
+    function applyFilters() {
+        let visibleProducts = 0;
+        const filteredProducts = [];
+        
+        // Filter products
+        productCards.forEach(card => {
+            const price = parseFloat(card.dataset.price);
+            const category = card.dataset.category;
+            const rating = parseInt(card.dataset.rating);
+            const date = parseInt(card.dataset.date);
+            
+            // Price filter
+            const priceMatch = price >= currentFilters.priceRange.min && 
+                             price <= currentFilters.priceRange.max;
+            
+            // Category filter
+            const categoryMatch = currentFilters.categories.length === 0 || 
+                                currentFilters.categories.includes(category);
+            
+            // Combined filter
+            if (priceMatch && categoryMatch) {
+                card.style.display = 'block';
+                visibleProducts++;
+                filteredProducts.push(card);
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Sort products
+        if (currentFilters.sortBy !== 'default') {
+            sortProducts(filteredProducts, currentFilters.sortBy);
+        }
+        
+        // Update count
+        updateProductCount(visibleProducts);
+        
+        // Show/hide no products message
+        toggleNoProductsMessage(visibleProducts);
+    }
+
+    // Sort products
+    function sortProducts(products, sortBy) {
+        const container = productsContainer;
+        
+        products.sort((a, b) => {
+            switch(sortBy) {
+                case 'price-low':
+                    return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                case 'price-high':
+                    return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                case 'rating':
+                    return parseInt(b.dataset.rating) - parseInt(a.dataset.rating);
+                case 'newest':
+                    return parseInt(b.dataset.date) - parseInt(a.dataset.date);
+                default:
+                    return 0;
+            }
+        });
+        
+        // Re-append sorted products
+        products.forEach(product => {
+            container.appendChild(product);
+        });
+    }
+
+    // Reset all filters
+    resetFiltersBtn.addEventListener('click', function() {
+        // Reset price range
+        currentFilters.priceRange = { min: 0, max: 1000000 };
+        priceRangeButtons[0].click(); // Click the "All Prices" button
+        
+        // Reset categories
+        categoryCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        currentFilters.categories = [];
+        
+        // Reset sorting
+        sortSelect.value = 'default';
+        currentFilters.sortBy = 'default';
+        
+        // Apply reset
+        applyFilters();
+    });
+
+    // Update product count display
+    function updateProductCount(count) {
+        showingCountElement.textContent = count;
+    }
+
+    // Show/hide no products message
+    function toggleNoProductsMessage(visibleCount) {
+        let noProductsMsg = productsContainer.querySelector('.no-products-message');
+        
+        if (visibleCount === 0 && !noProductsMsg) {
+            noProductsMsg = document.createElement('div');
+            noProductsMsg.className = 'col-12 text-center py-5 no-products-message';
+            noProductsMsg.innerHTML = '<div class="alert alert-warning">No products match your filters. Try adjusting your criteria.</div>';
+            productsContainer.appendChild(noProductsMsg);
+        } else if (visibleCount > 0 && noProductsMsg) {
+            noProductsMsg.remove();
+        }
+    }
+
+    // Quick view functionality
+    document.querySelectorAll('.quick-view').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-id');
+            // Here you would typically fetch product details via AJAX
+            console.log('Quick view for product ID:', productId);
+            // Example: showQuickViewModal(productId);
+        });
+    });
+
+    // Initialize with default filters
+    applyFilters();
+});
 </script>
 
-<style>
-    .price-range-buttons .btn {
-        width: 100%;
-        text-align: left;
-        transition: all 0.3s;
-        margin-bottom: 0.5rem;
-    }
-    
-    .price-range-buttons .btn.active {
-        background-color: #0d6efd;
-        color: white;
-        border-color: #0d6efd;
-    }
-    
-    .price-range-buttons .btn:hover {
-        transform: translateX(5px);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    
-    .price-range-buttons .btn:focus {
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
-    
-    .product-badge {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        padding: 5px 10px;
-        border-radius: 3px;
-        color: white;
-        font-weight: bold;
-        z-index: 1;
-    }
-    
-    .product-img-container img {
-        transition: transform 0.3s ease;
-    }
-    
-    .product-img-container:hover img {
-        transform: scale(1.05);
-    }
-    
-    .hover-shadow {
-        transition: box-shadow 0.3s ease;
-    }
-    
-    .hover-shadow:hover {
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-    }
-    
-    .filter-scroll::-webkit-scrollbar {
-        width: 5px;
-    }
-    
-    .filter-scroll::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-    
-    .filter-scroll::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-    }
-    
-    .filter-scroll::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
+<style>/* Add these styles to your existing CSS */
+.price-range-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.price-range-buttons .btn {
+    text-align: left;
+    transition: all 0.3s;
+}
+
+.price-range-buttons .btn.active {
+    background-color: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+}
+
+.filter-scroll {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.filter-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.filter-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.filter-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.no-products-message {
+    grid-column: 1 / -1;
+}
 </style>
 
 <?php
