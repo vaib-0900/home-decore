@@ -27,6 +27,7 @@
             $category_count = getCount($conn, "tbl_category");
             $product_count = getCount($conn, "tbl_product");
             $customer_count = getCount($conn, "tbl_customer");
+            $contact_count = getCount($conn, "tbl_contact");
             $feature_count = getCount($conn, "tbl_feature");
             $order_count = getCount($conn, "orders");
             ?>
@@ -54,6 +55,12 @@
                     <a href="customer_list.php" class="collapsed">
                         <i class="fas fa-user"></i>
                         <p>Customer <span class="badge badge-info"><?php echo $customer_count; ?></span></p>
+                    </a>
+                </li>
+                 <li class="nav-item">
+                    <a href="contact_list.php" class="collapsed">
+                        <i class="fas fa-user"></i>
+                        <p>Contact <span class="badge badge-info"><?php echo $contact_count; ?></span></p>
                     </a>
                 </li>
                 <li class="nav-item">

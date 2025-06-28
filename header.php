@@ -88,6 +88,104 @@ if(isset($_SESSION['customer_id'])) {
         .hearer_icon {
             gap: 1rem;
         }
+        
+        /* Account Modal Styles */
+        .account-modal {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            z-index: 1050;
+            transition: all 0.3s ease-out;
+            overflow-y: auto;
+        }
+        .account-modal.show {
+            right: 0;
+        }
+        .account-modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .account-modal-body {
+            padding: 1.5rem;
+        }
+        .account-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .account-modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .account-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .account-user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .account-user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            color: #777;
+        }
+        .account-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .account-links li {
+            margin-bottom: 0.5rem;
+        }
+        .account-links a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .account-links a:hover {
+            background: #f8f9fa;
+            color: #ff3368;
+        }
+        .account-links i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 576px) {
+            .account-modal {
+                width: 100%;
+                right: -100%;
+            }
+        }
     </style>
 </head>
 
@@ -157,7 +255,7 @@ if(isset($_SESSION['customer_id'])) {
                             <a id="search_1" href="javascript:void(0)" class="nav-icon" title="Search">
                                 <i class="ti-search"></i>
                             </a>
-                            <a href="account.php" class="nav-icon" title="Account">
+                            <a href="javascript:void(0)" class="nav-icon account-trigger" title="Account">
                                 <i class="ti-user"></i>
                             </a>
                             <a href="wishlist.php" class="nav-icon position-relative" title="Wishlist">
@@ -166,7 +264,7 @@ if(isset($_SESSION['customer_id'])) {
                                     <span class="badge-count"><?= $wishlist_count ?></span>
                                 <?php endif; ?>
                             </a>
-                            <a href="cart_list.php" class="nav-icon position-relative" title="Cart"></a>
+                            <a href="cart_list.php" class="nav-icon position-relative" title="Cart">
                                 <i class="ti-shopping-cart"></i>
                                 <?php if($cart_count > 0): ?>
                                     <span class="badge-count"><?= $cart_count ?></span>
@@ -179,3 +277,77 @@ if(isset($_SESSION['customer_id'])) {
         </div>
     </header>
     <!-- Header part end-->
+
+    <!-- Account Modal -->
+    <div class="account-modal-backdrop"></div>
+    <div class="account-modal">
+        <div class="account-modal-header">
+            <h5>My Account</h5>
+            <button class="account-close-btn">&times;</button>
+        </div>
+        <div class="account-modal-body">
+            <div class="account-user-info">
+                <div class="account-user-avatar">
+                    <i class="ti-user"></i>
+                </div>
+                <div>
+                    <h6><?= isset($_SESSION['customer_name']) ? htmlspecialchars($_SESSION['customer_name']) : 'Guest' ?></h6>
+                    <small><?= isset($_SESSION['customer_email']) ? htmlspecialchars($_SESSION['customer_email']) : '' ?></small>
+                </div>
+            </div>
+            
+            <ul class="account-links">
+                <li><a href="account.php"><i class="ti-user"></i> Account Dashboard</a></li>
+                <li><a href="confirmation.php"><i class="ti-package"></i> My Orders</a></li>
+                <li><a href="cart_list.php"><i class="ti-shopping-cart"></i> My Cart</a></li>
+                <li><a href="wishlist.php"><i class="ti-heart"></i> My Wishlist</a></li>
+                <li><a href="login_out.php"><i class="ti-power-off"></i> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-1.12.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- magnific popup js -->
+    <script src="js/jquery.magnific-popup.js"></script>
+    <!-- carousel js -->
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <!-- slick js -->
+    <script src="js/slick.min.js"></script>
+    <script src="js/jquery.counterup.min.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/contact.js"></script>
+    <script src="js/jquery.ajaxchimp.min.js"></script>
+    <script src="js/jquery.form.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/mail-script.js"></script>
+    <script src="js/custom.js"></script>
+    
+    <script>
+        // Account Modal Toggle
+        $(document).ready(function() {
+            // Open modal
+            $('.account-trigger').click(function() {
+                $('.account-modal').addClass('show');
+                $('.account-modal-backdrop').addClass('show');
+                $('body').css('overflow', 'hidden');
+            });
+            
+            // Close modal
+            $('.account-close-btn, .account-modal-backdrop').click(function() {
+                $('.account-modal').removeClass('show');
+                $('.account-modal-backdrop').removeClass('show');
+                $('body').css('overflow', 'auto');
+            });
+            
+            // Prevent modal from closing when clicking inside
+            $('.account-modal').click(function(e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+</body>
+</html>
