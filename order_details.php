@@ -337,12 +337,12 @@ $item_count = mysqli_num_rows($items_result);
     <ul class="step-progress">
         <!-- Progress line -->
         <div class="step-progress__bar" style="width: <?php 
-            if ($order['status'] == 'Pending') echo '10%';
-            elseif ($order['status'] == 'Processing') echo '20%';
-            elseif ($order['status'] == 'Packing') echo '40%';
-            elseif ($order['status'] == 'Shipped') echo '60%';
-            elseif ($order['status'] == 'Delivered') echo '84%';
-            elseif ($order['status'] == 'Cancelled') echo '100%';
+            if ($order['status'] == 'Pending') echo '20%';
+            elseif ($order['status'] == 'Processing') echo '40%';
+            elseif ($order['status'] == 'Packing') echo '60%';
+            elseif ($order['status'] == 'Shipped') echo '80%';
+            elseif ($order['status'] == 'Delivered') echo '100%';
+            elseif ($order['status'] == 'Cancelled') echo '120%';
             else echo '0%';
         ?>;"></div>
         
