@@ -154,16 +154,19 @@ if(isset($_SESSION['customer_id'])) {
                             </ul>
                         </div>
                         <div class="hearer_icon d-flex align-items-center">
-                            <a id="search_1" href="javascript:void(0)" class="nav-icon">
+                            <a id="search_1" href="javascript:void(0)" class="nav-icon" title="Search">
                                 <i class="ti-search"></i>
                             </a>
-                            <a href="wishlist.php" class="nav-icon position-relative">
+                            <a href="account.php" class="nav-icon" title="Account">
+                                <i class="ti-user"></i>
+                            </a>
+                            <a href="wishlist.php" class="nav-icon position-relative" title="Wishlist">
                                 <i class="ti-heart"></i>
                                 <?php if($wishlist_count > 0): ?>
                                     <span class="badge-count"><?= $wishlist_count ?></span>
                                 <?php endif; ?>
                             </a>
-                            <a href="cart_list.php" class="nav-icon position-relative">
+                            <a href="cart_list.php" class="nav-icon position-relative" title="Cart"></a>
                                 <i class="ti-shopping-cart"></i>
                                 <?php if($cart_count > 0): ?>
                                     <span class="badge-count"><?= $cart_count ?></span>
