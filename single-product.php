@@ -345,10 +345,13 @@ if (isset($_GET['id'])) {
                         <div class="card h-100 related-product-card border-0">
                             <div class="position-relative">
                                 <img src="admin/<?php echo $item['product_image']; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($item['product_name']); ?>">
-                                <div class="card-img-overlay d-flex justify-content-end align-items-start p-2">
-                                    <button class="btn btn-sm btn-light rounded-circle shadow-sm">
+                                <div class="card-img-overlay d-flex justify-content-end align-items-start p-2 gap-2">
+                                    <a href="addtocart.php?id=<?php echo $item['product_id']; ?>" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Add to Cart">
+                                        <i class="bi bi-cart-plus"></i>
+                                    </a>
+                                    <a href="wishlist-insert.php?product_id=<?php echo $item['product_id']; ?>" class="btn btn-sm btn-light rounded-circle shadow-sm" title="Add to Wishlist">
                                         <i class="bi bi-heart"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                             <div class="card-body">
