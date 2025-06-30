@@ -509,7 +509,7 @@ $item_count = mysqli_num_rows($items_result);
                         <div class="mb-5">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0"><i class="fas fa-box-open text-gray-500 me-2"></i> Order Items (<?php echo $item_count; ?>)</h5>
-                                <span class="badge bg-light text-dark">Order Total: Rs.<?php echo number_format($order['total_amount'], 2); ?></span>
+                                <span class="badge bg-light text-dark">Order Total: ₹.<?php echo number_format($order['total_amount'], 2); ?></span>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -538,9 +538,9 @@ $item_count = mysqli_num_rows($items_result);
                                                     <h6 class="mb-1 fw-bold"><?php echo htmlspecialchars($item['product_name']); ?></h6>
                                                     <p class="text-muted small mb-0">SKU: <?php echo htmlspecialchars($item['product_id']); ?></p>
                                                 </td>
-                                                <td class="text-end">Rs.<?php echo number_format($item['price'], 2); ?></td>
+                                                <td class="text-end">₹.<?php echo number_format($item['price'], 2); ?></td>
                                                 <td class="text-center"><?php echo $item['quantity']; ?></td>
-                                                <td class="text-end fw-bold">Rs.<?php echo number_format($item['price'] * $item['quantity'], 2); ?></td>
+                                                <td class="text-end fw-bold">₹.<?php echo number_format($item['price'] * $item['quantity'], 2); ?></td>
                                             </tr>
                                         <?php endwhile; ?>
                                     </tbody>
@@ -573,7 +573,7 @@ $item_count = mysqli_num_rows($items_result);
                                         <table class="table table-sm mb-0">
                                             <tr>
                                                 <td class="text-gray-600">Subtotal (<?php echo $item_count; ?> items)</td>
-                                                <td class="text-end">Rs.<?php echo number_format($order['total_amount'], 2); ?></td>
+                                                <td class="text-end">₹.<?php echo number_format($order['total_amount'], 2); ?></td>
                                             </tr>
                                             <tr>
                                                 <td class="text-gray-600">Shipping Fee</td>
@@ -581,7 +581,7 @@ $item_count = mysqli_num_rows($items_result);
                                             </tr>
                                             <tr class="fw-bold">
                                                 <td class="text-gray-800">Total</td>
-                                                <td class="text-end text-primary">Rs.<?php echo number_format($order['total_amount'], 2); ?></td>
+                                                <td class="text-end text-primary">₹.<?php echo number_format($order['total_amount'], 2); ?></td>
                                             </tr>
                                         </table>
                                         <hr>

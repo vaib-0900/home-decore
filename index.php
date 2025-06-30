@@ -82,65 +82,67 @@ include 'db_connection.php';
                     $rating = rand(3, 5);
                     $discount = $row['product_price'] > $row['sell_price'] ? round(($row['product_price'] - $row['sell_price']) / $row['product_price'] * 100) : 0;
             ?>
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm product-card position-relative">
-                    <?php if ($discount > 0): ?>
-                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">-<?= $discount ?>%</span>
-                    <?php endif; ?>
-                    <div class="product-img-container position-relative overflow-hidden" style="height: 200px;">
-                        <a href="single-product.php?id=<?= $product_id ?>" class="text-decoration-none">
-                            <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-fluid w-100 h-100 object-fit-contain p-3" alt="<?= htmlspecialchars($row['product_name']) ?>">
-                        </a>
-                        <div class="product-actions position-absolute top-0 end-0 m-2">
-                            <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $product_id ?>" data-bs-toggle="tooltip" title="Quick View">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="badge bg-light text-dark"><?= htmlspecialchars($row['product_name']) ?></span>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm product-card position-relative">
+                            <?php if ($discount > 0): ?>
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">-<?= $discount ?>%</span>
+                            <?php endif; ?>
+                            <div class="product-img-container position-relative overflow-hidden" style="height: 200px;">
+                                <a href="single-product.php?id=<?= $product_id ?>" class="text-decoration-none">
+                                    <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-fluid w-100 h-100 object-fit-contain p-3" alt="<?= htmlspecialchars($row['product_name']) ?>">
+                                </a>
+                                <div class="product-actions position-absolute top-0 end-0 m-2">
+                                    <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $product_id ?>" data-bs-toggle="tooltip" title="Quick View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-light text-dark"><?= htmlspecialchars($row['product_name']) ?></span>
 
-                        </div>
-                        <h5 class="card-title">
-                            <a href="single-product.php?id=<?= $product_id ?>" class="text-decoration-none text-dark">
-                                <?= htmlspecialchars($row['product_name']) ?>
-                            </a>
-                        </h5>
-                        <p class="card-text text-muted small mb-3">
-                            <?= substr(htmlspecialchars($row['product_description']), 0, 80) ?>...
-                        </p>
-                        <div class="rating small text-warning">
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <?= $i <= $rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>' ?>
-                                <?php endfor; ?>
-                            </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="text-primary mb-0">Rs. <?= number_format($row['sell_price'], 2) ?></h5>
-                                <?php if ($discount > 0): ?>
-                                    <small class="text-muted text-decoration-line-through">Rs. <?= number_format($row['product_price'], 2) ?></small>
-                                <?php endif; ?>
-                            </div>
-                            <div class="action-buttons d-flex gap-1">
-                                <a href="addtocart.php?id=<?= $product_id ?>" class="btn btn-sm btn-outline-primary rounded-circle" data-bs-toggle="tooltip" title="Add to Cart">
-                                    <i class="fas fa-cart-plus"></i>
-                                </a>
-                                <a href="wishlist-insert.php?product_id=<?= $product_id ?>" class="btn btn-sm btn-outline-danger rounded-circle" data-bs-toggle="tooltip" title="Add to Wishlist">
-                                    <i class="far fa-heart"></i>
-                                </a>
+                                </div>
+                                <h5 class="card-title">
+                                    <a href="single-product.php?id=<?= $product_id ?>" class="text-decoration-none text-dark">
+                                        <?= htmlspecialchars($row['product_name']) ?>
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted small mb-3">
+                                    <?= substr(htmlspecialchars($row['product_description']), 0, 80) ?>...
+                                </p>
+                                <div class="rating small text-warning">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <?= $i <= $rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>' ?>
+                                    <?php endfor; ?>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-primary mb-0">
+                                            ₹.<?= number_format($row['sell_price'], 2) ?>
+                                        </h5>
+                                        <?php if (isset($row['product_price']) && $row['product_price'] > $row['sell_price']): ?>
+                                            <small class="text-muted" style="text-decoration: line-through;">₹.<?= number_format($row['product_price'], 2) ?></small>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="action-buttons d-flex gap-1">
+                                        <a href="addtocart.php?id=<?= $product_id ?>" class="btn btn-sm btn-outline-primary rounded-circle" data-bs-toggle="tooltip" title="Add to Cart">
+                                            <i class="fas fa-cart-plus"></i>
+                                        </a>
+                                        <a href="wishlist-insert.php?product_id=<?= $product_id ?>" class="btn btn-sm btn-outline-danger rounded-circle" data-bs-toggle="tooltip" title="Add to Wishlist">
+                                            <i class="far fa-heart"></i>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <?php
+                <?php
                 endwhile;
             else:
-            ?>
-            <div class="col-12">
-                <p class="text-center text-muted">No featured products found.</p>
-            </div>
+                ?>
+                <div class="col-12">
+                    <p class="text-center text-muted">No featured products found.</p>
+                </div>
             <?php endif; ?>
         </div>
         <div class="text-center mt-4">

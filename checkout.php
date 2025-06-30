@@ -11,7 +11,7 @@ $customer_id = $_SESSION['customer_id'];
 $cart_query = "SELECT p.*, c.cart_qty, c.cart_id 
               FROM tbl_cart c
               JOIN tbl_product p ON c.cart_product_id = p.product_id
-              WHERE c.cart_customer_id = '$customer_id'";
+              WHERE c.cart_customer_id = '$customer_id'and c.cart_status = 'active'";
 $cart_result = mysqli_query($conn, $cart_query);
 
 $total = 0;

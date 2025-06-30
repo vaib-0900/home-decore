@@ -272,8 +272,7 @@ function getSimilarProducts($product_id, $limit = 4)
                                                 ?>
                                             </div>
                                         </div>
-
-                                        <a href="single-product.php" class="text-decoration-none">
+                                        <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
                                             <h5 class="card-title mb-2 text-dark hover-text-primary"><?= htmlspecialchars($row['product_name']) ?></h5>
                                         </a>
 
@@ -378,17 +377,17 @@ function getSimilarProducts($product_id, $limit = 4)
                                     <?php endfor; ?>
                                 </div>
 
-                                <a href="single-product.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none">
+                                <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
                                     <h5 class="card-title mb-2 text-dark hover-text-primary"><?= htmlspecialchars($row['product_name']) ?></h5>
                                 </a>
 
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <div>
                                         <h5 class="text-primary mb-0">
-                                            ₹<?= number_format($row['sell_price'], 2) ?>
+                                            ₹.<?= number_format($row['sell_price'], 2) ?>
                                         </h5>
-                                        <?php if ($row['product_price'] > $row['sell_price']): ?>
-                                            <small class="text-muted text-decoration-line-through">₹<?= number_format($row['product_price'], 2) ?></small>
+                                        <?php if (isset($row['product_price']) && $row['product_price'] > $row['sell_price']): ?>
+                                            <small class="text-muted" style="text-decoration: line-through;">₹.<?= number_format($row['product_price'], 2) ?></small>
                                         <?php endif; ?>
                                     </div>
                                     <div class="d-flex align-items-center" style="gap: 0.4rem;">

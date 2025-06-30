@@ -198,7 +198,7 @@ $stats = mysqli_fetch_assoc($stats_result);
                                                     <?php echo $item_count; ?> item<?php echo $item_count != 1 ? 's' : ''; ?>
                                                 </span>
                                             </td>
-                                            <td class="fw-bold text-end">Rs.<?php echo number_format($order['total_amount'], 2); ?></td>
+                                            <td class="fw-bold text-end">₹.<?php echo number_format($order['total_amount'], 2); ?></td>
                                             <td>
                                                 <?php
                                                 $status_class = '';
@@ -283,7 +283,7 @@ $stats = mysqli_fetch_assoc($stats_result);
                                                 <?php echo $item_count; ?> item<?php echo $item_count != 1 ? 's' : ''; ?>
                                             </span>
                                         </div>
-                                        <div class="fw-bold">Rs.<?php echo number_format($order['total_amount'], 2); ?></div>
+                                        <div class="fw-bold">₹.<?php echo number_format($order['total_amount'], 2); ?></div>
                                     </div>
                                     
                                     <div class="d-flex justify-content-between align-items-center">
