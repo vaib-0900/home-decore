@@ -64,116 +64,87 @@ include 'db_connection.php';
 </section>
 <!-- banner part start-->
 <!-- feature_part start-->
-<section class="py-5 bg-light">
+<section class="featured-products py-5 bg-light">
     <div class="container">
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-between align-items-center">
-                <h2 class="section-title">Featured Products</h2>
-                <div>
-                    <button class="btn btn-outline-secondary me-2 featured-prev rounded-circle">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="btn btn-outline-secondary featured-next rounded-circle">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
+        <div class="section-title text-center mb-5">
+            <h2 class="fw-bold position-relative d-inline-block">Featured Products</h2>
+            <p class="text-muted">Our most popular items this season</p>
         </div>
+        <div class="row g-4">
+            <?php
+            $query = "SELECT tbl_product.*, tbl_feature.product_id AS feature_product_id 
+                      FROM tbl_product 
+                      INNER JOIN tbl_feature ON tbl_product.product_id = tbl_feature.product_id";
+            $result = mysqli_query($conn, $query);
+            if ($result && mysqli_num_rows($result) > 0):
+                while ($row = mysqli_fetch_assoc($result)):
+                    $product_id = $row['product_id'];
+                    $rating = rand(3, 5);
+                    $discount = $row['product_price'] > $row['sell_price'] ? round(($row['product_price'] - $row['sell_price']) / $row['product_price'] * 100) : 0;
+            ?>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm product-card position-relative">
+                    <?php if ($discount > 0): ?>
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">-<?= $discount ?>%</span>
+                    <?php endif; ?>
+                    <div class="product-img-container position-relative overflow-hidden" style="height: 200px;">
+                        <a href="single-product.php?id=<?= $product_id ?>" class="text-decoration-none">
+                            <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-fluid w-100 h-100 object-fit-contain p-3" alt="<?= htmlspecialchars($row['product_name']) ?>">
+                        </a>
+                        <div class="product-actions position-absolute top-0 end-0 m-2">
+                            <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $product_id ?>" data-bs-toggle="tooltip" title="Quick View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-light text-dark"><?= htmlspecialchars($row['product_name']) ?></span>
 
-        <div class="swiper featured-slider overflow-hidden">
-            <div class="swiper-wrapper">
-                <?php
-
-                $query = "SELECT * FROM tbl_product INNER JOIN tbl_feature ON tbl_product.product_id = tbl_feature.product_id";
-                $result = mysqli_query($conn, $query);
-
-                if (mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_array($result)) {
-                ?>
-                        <div class="swiper-slide">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <!-- Product Badge -->
-                                <?php if ($row['discount_per'] > 0): ?>
-                                    <span class="badge bg-danger position-absolute m-2">-<?= $row['discount_per'] ?>%</span>
+                        </div>
+                        <h5 class="card-title">
+                            <a href="single-product.php?id=<?= $product_id ?>" class="text-decoration-none text-dark">
+                                <?= htmlspecialchars($row['product_name']) ?>
+                            </a>
+                        </h5>
+                        <p class="card-text text-muted small mb-3">
+                            <?= substr(htmlspecialchars($row['product_description']), 0, 80) ?>...
+                        </p>
+                        <div class="rating small text-warning">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <?= $i <= $rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>' ?>
+                                <?php endfor; ?>
+                            </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="text-primary mb-0">Rs. <?= number_format($row['sell_price'], 2) ?></h5>
+                                <?php if ($discount > 0): ?>
+                                    <small class="text-muted text-decoration-line-through">Rs. <?= number_format($row['product_price'], 2) ?></small>
                                 <?php endif; ?>
-
-                                <!-- Product Image -->
-                                <div class="position-relative overflow-hidden text-center">
-                                    <a href="single-product.php?id=<?= $row['product_id'] ?>" class="text-decoration-none">
-                                            <img src="admin/<?= htmlspecialchars($row['product_image']) ?>" class="img-thumbnail" alt="<?= htmlspecialchars($row['product_image']) ?>">
-                                            <div class="product-actions position-absolute top-0 end-0 m-2">                         
-                                            <button class="btn btn-sm btn-light rounded-circle shadow-sm quick-view" data-id="<?= $row['product_id'] ?>" data-bs-toggle="tooltip" title="Quick View">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                           
-                                        </div>
-                                        </a>
-
-                                </div>
-
-                                <!-- Product Body -->
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="badge bg-light text-dark"><?= $row['category_name'] ?? 'Category' ?></span>
-                                        <div class="text-warning">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                        </div>
-                                    </div>
-
-                                    <h5 class="card-title">
-                                        <a href="single_product.php?product_id=<?= $row['product_id'] ?>" class="text-decoration-none text-dark">
-                                            <?= htmlspecialchars($row['product_name']) ?>
-                                        </a>
-                                    </h5>
-
-                                    <p class="card-text text-muted small">
-                                        <?= substr(htmlspecialchars($row['product_description'] ?? ''), 0, 80) ?>...
-                                    </p>
-
-                                    <!-- Price -->
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <div>
-                                            <h5 class="text-primary mb-0">Rs. <?= number_format($row['sell_price'], 2) ?></h5>
-                                            <?php if ($row['discount_per'] > 0 && isset($row['original_price'])): ?>
-                                                <small class="text-muted text-decoration-line-through">Rs. <?= number_format($row['original_price'], 2) ?></small>
-                                            <?php endif; ?>
-                                        </div>
-                                        <div class="action-buttons d-flex gap-2 flex-wrap">
-                                            <a href="single-product.php?id=<?= $row['product_id'] ?>"
-                                                class="btn btn-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
-                                                <i class="fas fa-eye me-1"></i>
-                                                <span>View</span>
-                                            </a>
-                                            <a href="addtocart.php?id=<?= $row['product_id'] ?>"
-                                                class="btn btn-primary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
-                                                <i class="fas fa-cart-plus me-1"></i>
-                                                <span>Add</span>
-                                            </a>
-                                            <a href="wishlist-insert.php?id=<?= $row['product_id'] ?>"
-                                                class="btn btn-outline-secondary btn-sm rounded-pill px-3 py-2 d-flex align-items-center">
-                                                <i class="far fa-heart me-1"></i>
-                                                <span>Wishlist</span>
-
-                                            </a>
-                                        </div>
-
-
-
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="action-buttons d-flex gap-1">
+                                <a href="addtocart.php?id=<?= $product_id ?>" class="btn btn-sm btn-outline-primary rounded-circle" data-bs-toggle="tooltip" title="Add to Cart">
+                                    <i class="fas fa-cart-plus"></i>
+                                </a>
+                                <a href="wishlist-insert.php?product_id=<?= $product_id ?>" class="btn btn-sm btn-outline-danger rounded-circle" data-bs-toggle="tooltip" title="Add to Wishlist">
+                                    <i class="far fa-heart"></i>
+                                </a>
                             </div>
                         </div>
-                <?php
-                    }
-                } else {
-                    echo '<div class="col-12 text-center py-5"><div class="alert alert-info">No featured products found.</div></div>';
-                }
-                ?>
+                    </div>
+                </div>
             </div>
+            <?php
+                endwhile;
+            else:
+            ?>
+            <div class="col-12">
+                <p class="text-center text-muted">No featured products found.</p>
+            </div>
+            <?php endif; ?>
+        </div>
+        <div class="text-center mt-4">
+            <a href="shop.php" class="btn btn-primary btn-lg">View All Products</a>
         </div>
     </div>
 </section>
