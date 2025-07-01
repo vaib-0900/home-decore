@@ -46,9 +46,7 @@ include 'sidebar.php';
                                                 echo "<td>" . htmlspecialchars(substr($row['contact_msg'], 0, 50)) . (strlen($row['contact_msg']) > 50 ? '...' : '') . "</td>";
                                                 echo "<td>
                                                         <div class='form-button-action'>
-                                                            <a href='edit_contact.php?id=" . $row['contact_id'] . "' class='btn btn-link btn-primary btn-lg' data-toggle='tooltip' title='Edit'>
-                                                                <i class='fa fa-edit'></i>
-                                                            </a>
+                                                          
                                                             <a href='delete_contact.php?id=" . $row['contact_id'] . "' class='btn btn-link btn-danger' data-toggle='tooltip' title='Delete' onclick='return confirm(\"Are you sure you want to delete this contact?\")'>
                                                                 <i class='fa fa-times'></i>
                                                             </a>

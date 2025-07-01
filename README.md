@@ -1,5 +1,4 @@
 # home-decore
-hey
 Index Page Image
 ![alt text](image.png)
 
@@ -58,3 +57,101 @@ Register form image
 
 login page image 
 1.![alt text](image-18.png)
+
+------------------------------------- Home Decore End -----------------------------------------------------------
+
+
+
+
+------------------------------------# Admin-Pannel -------------------------------------------------------------------------------------------------
+
+Admin Dashboard image 
+![alt text](image-19.png)
+
+#Category-Mahagement 
+
+1.category list images 
+![alt text](image-20.png)
+
+2.Add category image
+![alt text](image-21.png)
+
+3.view category image
+![alt text](image-22.png)
+
+4.Edit category image 
+![alt text](image-23.png)
+
+5.delete category image
+![alt text](image-24.png)
+
+ 
+#Products-Managment 
+
+1.product list image
+![alt text](image-25.png)
+
+2.Add product image
+![alt text](image-26.png)
+
+3.view product image
+![alt text](image-27.png)
+
+4.Edit product image 
+![alt text](image-28.png)
+
+5.delete product image
+![alt text](image-29.png)
+
+
+#customer-Managment 
+
+1.customer list image 
+![alt text](image-30.png)
+
+2.Add customer image
+![alt text](image-32.png)
+
+3.Edit customer image 
+![alt text](image-31.png)
+
+4.delete customer image
+![alt text](image-33.png)
+
+
+#contact-Management 
+
+1.contact list image 
+![alt text](image-34.png)
+
+2.delete contact image
+![alt text](image-35.png)
+
+
+#Featured Products Management
+
+1.Featured Products list image 
+![alt text](image-36.png)
+
+2.delete Featured Products image 
+![alt text](image-37.png)
+
+
+#Order-Management
+
+1.Order list image 
+![alt text](image-38.png)
+
+2.View Order image 
+![alt text](image-39.png)
+
+3.Edit Oreder image 
+![alt text](image-40.png)
+
+4.Delete Order image 
+![alt text](image-41.png)
+
+
+------------------------------------- Home Decore / Admin Pannel  End -----------------------------------------------------------
+
+

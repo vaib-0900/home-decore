@@ -254,48 +254,7 @@ $target_percentage = $monthly_target > 0 ? round(($monthly_sales / $monthly_targ
         </div>
 
         <!-- Second Row with Sales and Recent Orders -->
-        <div class="row mt-4">
-            <div class="col-lg-8">
-                <div class="chart-container">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="fw-bold">Sales Overview (Last 30 Days)</h4>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-                                Last 30 Days
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="updateChart(7)">Last 7 Days</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="updateChart(30)">Last 30 Days</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="updateChart(90)">Last 90 Days</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div style="height: 300px;">
-                        <canvas id="salesChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-lg-4">
-                
-                <div class="card stat-card card-gradient-6 mt-4">
-                    <div class="card-body text-center">
-                        <div class="stat-icon mb-3">
-                            <i class="fas fa-bolt fa-3x"></i>
-                        </div>
-                        <h3 class="card-title"><?= $counts['today_orders'] ?></h3>
-                        <p class="card-category">TODAY'S ORDERS</p>
-                        <div class="mt-3">
-                            <?php
-                            $today_percentage = $counts['order_count'] > 0 ? 
-                                round($counts['today_orders']/$counts['order_count']*100, 2) : 0;
-                            ?>
-                            <span class="badge bg-white text-dark"><?= $today_percentage ?>% of total</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+     
 
         <!-- Recent Orders Table -->
         <div class="row mt-4">
